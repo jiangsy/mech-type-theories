@@ -85,7 +85,7 @@ mutual
   U⇒A-⊢′ (⊢∷ {Γ′} {T′} {i = i′} ⊢Γ′ ⊢T′) 
     with U⇒A-tm′ ⊢T′ 
        | U⇒A-⊢′ ⊢Γ′
-  ... | ( i , Γ , T , .(Se i′) , (Γ[↝]Γ′ , T↝T′ , ↝Se) , ⊢T) , IHT 
+  ... | ( i , Γ , T , .(Se i′) , (Γ[↝]Γ′ , T↝T′ , ↝Se) , ⊢T) , _ , IHT 
       | _ , IHΓ
     with ⊢T:Se-lvl ⊢T 
        | presup-tm ⊢T
@@ -104,19 +104,25 @@ mutual
   U⇒A-tm′ : U.Γ′ U.⊢ U.t′ ∶ U.T′ →
           -------------
            (∃ λ i → ∃ λ Γ → ∃ λ t → ∃ λ T → ((Γ [↝] U.Γ′) × (t ↝ U.t′) × (T ↝ U.T′)) × Γ A.⊢ t ∶[ i ] T) × 
+           (∀ {i Γ t₁ t₂ i₁ i₂ T₁ T₂} → U.Γ′ ⊢ U.T′ ≈ Se i ∶ Se i → t₁ ↝ U.t′ → t₂ ↝ U.t′ → Γ [↝] U.Γ′ →  
+            Γ ⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ t₂ ∶[ i₂ ] T₂ → Γ A.⊢ t₁ ≈ t₂ ∶[ i₁ ] T₁) × 
            (∀ {Γ t₁ t₂ i₁ i₂ T₁ T₂} → t₁ ↝ U.t′ → t₂ ↝ U.t′ → Γ [↝] U.Γ′ → 
             -- cannot have this condition , otherwise cannot be used at 𝟙 
             T₁ ↝ U.T′ → T₂ ↝ U.T′ → 
             Γ ⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ t₂ ∶[ i₂ ] T₂ → Γ A.⊢ t₁ ≈ t₂ ∶[ i₁ ] T₁)
   U⇒A-tm′ (N-wf ⊢Γ′) = {!   !} , {!   !} 
   U⇒A-tm′ (Se-wf i x) = {!   !}
-  U⇒A-tm′ (Liftt-wf n ⊢t′) = n , {!   !} 
+  U⇒A-tm′ (Liftt-wf n ⊢t′) = _ , {!   !} 
   U⇒A-tm′ (Π-wf ⊢t′ ⊢t′₁ x) = {!   !}
   U⇒A-tm′ (vlookup x x₁) = {!   !}
   U⇒A-tm′ (ze-I x) = {!   !}
   U⇒A-tm′ (su-I ⊢t′) = {!   !}
   U⇒A-tm′ (N-E ⊢t′ ⊢t′₁ ⊢t′₂ ⊢t′₃) = {!   !}
-  U⇒A-tm′ (Λ-I {Γ = Γ′} {S = S′} {t = t′} {T = T′} ⊢S′ ⊢t′) = {!   !} , helper
+  U⇒A-tm′ (Λ-I {Γ = Γ′} {S = S′} {t = t′} {T = T′} ⊢S′ ⊢t′) 
+    with U⇒A-tm′ ⊢S′ 
+       | U⇒A-tm′ ⊢t′ 
+  ...  | x , IHS
+       | y , IHt = {!   !} , {!   !} , helper
     where 
       helper : ∀ {Γ t₁ t₂ i₁ i₂ T₁ T₂} →
         t₁ ↝ Λ t′ →
@@ -125,7 +131,11 @@ mutual
         T₁ ↝ Π S′ T′ →
         T₂ ↝ Π S′ T′ →
         Γ ⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ t₂ ∶[ i₂ ] T₂ → Γ ⊢ t₁ ≈ t₂ ∶[ i₁ ] T₁
-      helper (↝Λ t₁↝) (↝Λ t₂↝) Γ↝ (↝Π T₁↝ T₁↝₁) (↝Π T₂↝ T₂↝₁) ⊢t₁ ⊢t₂ = {!   !}
+      helper (↝Λ t₁↝) (↝Λ t₂↝) Γ↝ (↝Π S₁↝ T₁↝) (↝Π S₂↝ T₂↝) ⊢t₁ ⊢t₂ 
+        with Λ-inv ⊢t₁ 
+           | Λ-inv ⊢t₂
+      ...  | refl , refl , ⊢S₁ , ⊢t₁ 
+           | refl , refl , ⊢S₂ , ⊢t₂ = {!   !}
 
   U⇒A-tm′ (Λ-E ⊢t′ ⊢t′₁ ⊢t′₂ ⊢t′₃) = {!   !}
   U⇒A-tm′ (L-I n ⊢t′) = {!   !}

@@ -37,6 +37,7 @@ mutual
             rec (A.T ↙ i) A.s A.r A.t ↝ rec U.T′ U.s′ U.r′ U.t′ 
     ↝Λ :  ∀ {i} →
           A.t ↝ U.t′ →
+          
           Λ (A.S ↙ i) A.t ↝ Λ U.t′
     ↝$ :  A.t ↝ U.t′ →
           A.s ↝ U.s′ →
