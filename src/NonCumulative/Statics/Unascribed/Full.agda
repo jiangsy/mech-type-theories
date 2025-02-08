@@ -77,6 +77,7 @@ mutual
                Γ ⊢ Λ S t ∶ Π S T
     Λ-E      : ∀ {i j} →
                -- expose typing judgments for soundness proof
+               ⊢ Γ →
                Γ ⊢ S ∶ Se i →
                S ∷ Γ ⊢ T ∶ Se j →
                Γ ⊢ r ∶ Π S T →
@@ -92,12 +93,15 @@ mutual
                Γ ⊢ t ∶ Liftt n T →
                --------------------
                Γ ⊢ unlift t ∶ T
-    t[σ]     : Δ ⊢ t ∶ T →
+    t[σ]     : ⊢ Δ →
+               Δ ⊢ t ∶ T →
                Γ ⊢s σ ∶ Δ →
                ---------------------
                Γ ⊢ t [ σ ] ∶ T [ σ ]
     conv     : ∀ {i} →
+               ⊢ Γ →
                Γ ⊢ t ∶ S →
+               Γ ⊢ S ∶ Se i → 
                Γ ⊢ S ≈ T ∶ Se i →
                ------------------
                Γ ⊢ t ∶ T
