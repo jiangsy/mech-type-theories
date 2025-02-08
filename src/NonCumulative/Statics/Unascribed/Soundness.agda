@@ -74,12 +74,47 @@ mutual
   ...  | Γ , ⊢Γ , Γ↝ , IHΓ = _ , _ , _ , _ , Γ↝ , ↝Se , ↝Se , Se-wf _ ⊢Γ , λ { ↝Se ⊢Se → ≈-refl ⊢Se }
   U⇒A-tm (Liftt-wf n ⊢T′) 
     with U⇒A-tm ⊢T′
-  ... | i , Γ , T , .(Se _) , Γ↝ , T↝ , ↝Se , ⊢T , IHT 
+  ... | _ , Γ , T , .(Se _) , Γ↝ , T↝ , ↝Se , ⊢T , IHT 
     with ⊢T:Se-lvl ⊢T
   ... | refl = _ , _ , _ , _ , Γ↝ , ↝Liftt T↝ , ↝Se , Liftt-wf _ ⊢T , helper
     where helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
           helper (↝Liftt t₁↝) ⊢t₁ = {!   !}
-  U⇒A-tm (Π-wf ⊢S′ ⊢T′ x) = {!  !}
+  U⇒A-tm (Π-wf {Γ = Γ′} {S = S′} {T = T′} ⊢Γ′ ⊢S′ ⊢T′ k≡maxij)
+    with U⇒A-⊢ ⊢Γ′
+       | U⇒A-tm ⊢S′
+       | U⇒A-tm ⊢T′
+  ...  | Γ , ⊢Γ , Γ↝ , IHΓ
+       | _ , Γ₁ , S , _ , Γ↝₁ , S↝ , ↝Se , ⊢S , IHS
+       | _ , _ , T , .(Se _) , (↝∷ {T = S₁} Γ↝₂ S↝₁) , T↝ , ↝Se , ⊢T , IHT
+      with ⊢T:Se-lvl ⊢S
+         | ⊢T:Se-lvl ⊢T
+  ... | refl | refl
+      with ⊢∷ ⊢Γ₂ ⊢S₂ ← proj₁ (presup-tm ⊢T)
+      with IHΓ Γ↝₁ (proj₁ (presup-tm ⊢S))
+         | IHΓ Γ↝₂ ⊢Γ₂
+  ...    | Γ≈Γ₁ | Γ≈Γ₂ 
+      with Γ₁≈Γ₂ ← ⊢≈-trans (⊢≈-sym Γ≈Γ₂) Γ≈Γ₁
+      with IHS S↝₁ (ctxeq-tm Γ₁≈Γ₂ ⊢S₂)
+  ... | S≈S₂
+      with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
+  ... | refl , _ = _ , _ , _ , _ , Γ↝ , ↝Π S↝ T↝ , ↝Se , Π-wf (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (⊢≈-sym S∷Γ≈S₂∷Γ₂) ⊢T) k≡maxij , helper
+      where S∷Γ≈S₂∷Γ₂ : A.⊢ (S ↙ _) L.∷ Γ ≈ (S₁ ↙ _) L.∷ _
+            S∷Γ≈S₂∷Γ₂ = ∷-cong Γ≈Γ₂ (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) ⊢S₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S≈S₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) S≈S₂)
+            
+            helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
+            helper (↝Π S₁↝ T₁↝) ⊢Πt₁ 
+              with Π-inv′ ⊢Πt₁
+            ... | refl , ≈Se , ⊢S₁ , ⊢T₁ 
+              with IHS S₁↝ (ctxeq-tm  Γ≈Γ₁ ⊢S₁)
+            ... | S≈S₁
+              with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
+            ... | refl , _ 
+              with S₁≈S₂ ← ≈-trans (≈-sym S≈S₁) S≈S₂
+              with IHT T₁↝ (ctxeq-tm (∷-cong Γ≈Γ₂ ⊢S₁ ⊢S₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S₁≈S₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) S₁≈S₂)) ⊢T₁) 
+            ... | T≈T₁ 
+              with unique-typ ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
+            ... | refl , _ = ≈-conv (Π-cong (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S≈S₁) (ctxeq-≈ (⊢≈-sym S∷Γ≈S₂∷Γ₂) T≈T₁) refl) (≈-sym ≈Se)
+              
   U⇒A-tm (vlookup ⊢Γ′ x∈Γ') 
     with U⇒A-⊢ ⊢Γ′
   ... | Γ , ⊢Γ , Γ↝ , IHΓ
@@ -96,19 +131,39 @@ mutual
             with su-inv ⊢sut₁ 
           ... | refl , T₁≈N , ⊢t₁ = ≈-conv (su-cong (IHt t₁↝ ⊢t₁)) (≈-sym T₁≈N)
   U⇒A-tm (N-E ⊢t′ ⊢t′₁ ⊢t′₂ ⊢t′₃) = {!   !}
-  U⇒A-tm (Λ-I {Γ = Γ′} {S = S′} {T = T′} {i = i′} ⊢S′ ⊢t′) 
-    with U⇒A-tm ⊢S′ 
+  
+  U⇒A-tm (Λ-I {Γ = Γ′} {S = S′} {T = T′} {i = i′} ⊢Γ′ ⊢S′ ⊢t′) 
+    with U⇒A-⊢ ⊢Γ′
+       | U⇒A-tm ⊢S′ 
        | U⇒A-tm ⊢t′ 
-  ... | j , Γ , S , _ , Γ↝Γ′ , S↝S′ , ↝Se , ⊢S , IHS
-      | k , _ , t , T , (↝∷ {T = S₁} Γ↝₁Γ′ S↝₁S′) , t↝t′ , T↝T′ , ⊢t , IHt = {!   !} , _ , {!   !} , {!   !} , Γ↝Γ′ , ↝Λ {i = i′} S↝S′ t↝t′ , ↝Π {i = i′} {j = k} S↝S′ T↝T′ , {!   !} , helper
+  ... | Γ , ⊢Γ , Γ↝Γ′ , IHΓ
+      | _ , Γ₁ , S , _ , Γ↝₁Γ′ , S↝S′ , ↝Se , ⊢S , IHS
+      | k , _ , t , T , (↝∷ {T = S₁} Γ↝₂Γ′ S↝₁S′) , t↝t′ , T↝T′ , ⊢t , IHt
+    with ⊢∷ ⊢Γ₂ ⊢S₂ ← proj₁ (presup-tm ⊢t)
+    with IHΓ Γ↝₁Γ′ (proj₁ (presup-tm ⊢S))
+       | IHΓ Γ↝₂Γ′ ⊢Γ₂
+  ...  | Γ≈Γ₁ | Γ≈Γ₂ 
+    with Γ₁≈Γ₂ ← ⊢≈-trans (⊢≈-sym Γ≈Γ₂) Γ≈Γ₁
+    with IHS S↝₁S′ (ctxeq-tm Γ₁≈Γ₂ ⊢S₂) 
+  ... | S≈S₂
+    with unique-typ ⊢S (proj₁ (proj₂ (presup-≈  S≈S₂)))
+  ... | refl , _
+    with ⊢T:Se-lvl ⊢S
+  ... | refl = _ , _ , _ , _ , Γ↝Γ′ , ↝Λ {i = i′} S↝S′ t↝t′ , ↝Π {i = i′} {j = k} S↝S′ T↝T′ , Λ-I (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (∷-cong-simp (⊢≈-sym Γ≈Γ₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) (≈-sym S≈S₂) )) ⊢t) refl , helper
     where helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
-          helper (↝Λ {i = i} t₁↝ t₁↝₁) ⊢t₁ 
-            with Λ-inv′ ⊢t₁ 
-          ... | j₁ , T₁ , T₁≈ , i≡maxj₁ , ⊢t₁′ 
-            with presup-tm ⊢t₁′ 
-          ... | ⊢∷ ⊢Γ ⊢S₂ , _ 
-            with IHS t₁↝ ⊢S₂
-          ... | S≈S₂ = ≈-conv (≈-sym {!   !}) (≈-sym T₁≈)
+          helper (↝Λ {i = i} S₁↝ t₁↝) ⊢Λt₁ 
+            with Λ-inv′ ⊢Λt₁ 
+          ... | j₁ , T₁ , T₁≈ , i≡maxj₁ , ⊢t₁ 
+            with presup-tm ⊢t₁
+          ... | ⊢∷ ⊢Γ ⊢S₁ , _ 
+            with IHS S₁↝ (ctxeq-tm Γ≈Γ₁ ⊢S₁)
+          ... | S≈S₁ 
+            with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
+          ... | refl , _
+            with S∷Γ≈S₂∷Γ₂ ← ∷-cong-simp Γ≈Γ₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) (≈-trans (≈-sym S≈S₁) S≈S₂))
+            with IHt t₁↝ (ctxeq-tm S∷Γ≈S₂∷Γ₂ ⊢t₁)
+          ... | t≈t₁ = ≈-conv (≈-sym (Λ-cong ⊢S₁ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) (≈-sym S≈S₁)) (ctxeq-≈ (⊢≈-sym S∷Γ≈S₂∷Γ₂) (≈-sym t≈t₁)) i≡maxj₁)) (≈-sym T₁≈)
+
   U⇒A-tm (Λ-E {S = S′} {T = T′} {r = r′} {s = s′} ⊢S′ ⊢T′ ⊢r′ ⊢s′) 
     with U⇒A-tm ⊢S′
   ... | 1+j , Γ , S , _ , Γ↝Γ′ , S↝S′ , ↝Se , ⊢S , IHS 
@@ -551,4 +606,4 @@ mutual
 --   C⇒F-s-≈ (s-≈-sym σ≈σ′)          = s-≈-sym (C⇒F-s-≈ σ≈σ′)
 --   C⇒F-s-≈ (s-≈-trans σ≈σ′ σ′≈σ″)  = s-≈-trans (C⇒F-s-≈ σ≈σ′) (C⇒F-s-≈ σ′≈σ″)
 --   C⇒F-s-≈ (s-≈-conv σ≈σ′ Δ′≈Δ)    = s-≈-conv (C⇒F-s-≈ σ≈σ′) (C⇒F-⊢≈ Δ′≈Δ)
-  
+    

@@ -45,6 +45,7 @@ mutual
                -------------------------
                Γ ⊢ Liftt n T ∶ Se (n + i)
     Π-wf     : ∀ {i j k} →
+               ⊢ Γ → 
                Γ ⊢ S ∶ Se i →
                S ∷ Γ ⊢ T ∶ Se j →
                k ≡ max i j →
@@ -69,6 +70,7 @@ mutual
                --------------------------
                Γ ⊢ rec T s r t ∶ T [| t ]
     Λ-I      : ∀ {i} →
+               ⊢ Γ →   -- ** new
                Γ ⊢ S ∶ Se i →    -- remove after presupposition
                S ∷ Γ ⊢ t ∶ T →
                ------------------
