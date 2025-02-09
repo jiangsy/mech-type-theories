@@ -11,6 +11,7 @@ open import Lib
 open import NonCumulative.Statics.Ascribed.Presup as A
 open import NonCumulative.Statics.Ascribed.CtxEquiv as A
 open import NonCumulative.Statics.Ascribed.Refl as A
+open import NonCumulative.Statics.Ascribed.Inversion as A
 open import NonCumulative.Statics.Ascribed.Properties.Contexts as A
 open import NonCumulative.Statics.Ascribed.Properties as A
 open import NonCumulative.Completeness.Consequences fext
@@ -27,6 +28,12 @@ U⇒A-vlookup : ∀ {x} →
 U⇒A-vlookup (↝∷ {Γ′} {Γ} {T′} {T} {i′} Γ↝Γ′ T↝T′) here = _ , _ , (↝sub T↝T′ ↝wk , here) 
 U⇒A-vlookup (↝∷ Γ↝Γ′ _) (there x∈Γ') with U⇒A-vlookup Γ↝Γ′ x∈Γ'
 ... | i , T , T↝T′ , x∈Γ = _ , _ , ↝sub T↝T′ ↝wk , there x∈Γ
+
+unique-lvl : ∀ {i j} →
+  A.Γ ⊢ A.t ∶[ i ] A.T →
+  A.Γ ⊢ A.t ∶[ j ] A.T′ →
+  i ≡ j 
+unique-lvl ⊢t ⊢t′ = proj₁ (unique-typ ⊢t ⊢t′)
 
 mutual
   U⇒A-⊢ : U.⊢ U.Γ′ →
@@ -52,8 +59,8 @@ mutual
            ... | ⊢T₁′
             with IHT T₁↝ ⊢T₁′
            ...  | T≈T₁
-            with unique-typ ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
-           ... | refl , _ = ∷-cong-simp Γ≈Γ₁ (ctxeq-≈ (⊢≈-sym Γ≈Γ′) T≈T₁)
+            with unique-lvl ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
+           ... | refl = ∷-cong-simp Γ≈Γ₁ (ctxeq-≈ (⊢≈-sym Γ≈Γ′) T≈T₁)
 
   U⇒A-tm : U.Γ′ U.⊢ U.t′ ∶ U.T′ →
           -------------
@@ -96,8 +103,8 @@ mutual
       with Γ₁≈Γ₂ ← ⊢≈-trans (⊢≈-sym Γ≈Γ₂) Γ≈Γ₁
       with IHS S↝₁ (ctxeq-tm Γ₁≈Γ₂ ⊢S₂)
   ... | S≈S₂
-      with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
-  ... | refl , _ = _ , _ , _ , _ , Γ↝ , ↝Π S↝ T↝ , ↝Se , Π-wf (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (⊢≈-sym S∷Γ≈S₂∷Γ₂) ⊢T) k≡maxij , helper
+      with unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
+  ... | refl = _ , _ , _ , _ , Γ↝ , ↝Π S↝ T↝ , ↝Se , Π-wf (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (⊢≈-sym S∷Γ≈S₂∷Γ₂) ⊢T) k≡maxij , helper
       where S∷Γ≈S₂∷Γ₂ : A.⊢ (S ↙ _) L.∷ Γ ≈ (S₁ ↙ _) L.∷ _
             S∷Γ≈S₂∷Γ₂ = ∷-cong Γ≈Γ₂ (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) ⊢S₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S≈S₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) S≈S₂)
 
@@ -107,13 +114,13 @@ mutual
             ... | refl , ≈Se , ⊢S₁ , ⊢T₁
               with IHS S₁↝ (ctxeq-tm Γ≈Γ₁ ⊢S₁)
             ... | S≈S₁
-              with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
-            ... | refl , _
+              with unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
+            ... | refl
               with S₁≈S₂ ← ≈-trans (≈-sym S≈S₁) S≈S₂
               with IHT T₁↝ (ctxeq-tm (∷-cong Γ≈Γ₂ ⊢S₁ ⊢S₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S₁≈S₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) S₁≈S₂)) ⊢T₁)
             ... | T≈T₁
-              with unique-typ ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
-            ... | refl , _ = ≈-conv (Π-cong (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S≈S₁) (ctxeq-≈ (⊢≈-sym S∷Γ≈S₂∷Γ₂) T≈T₁) refl) (≈-sym ≈Se)
+              with unique-lvl ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
+            ... | refl = ≈-conv (Π-cong (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) S≈S₁) (ctxeq-≈ (⊢≈-sym S∷Γ≈S₂∷Γ₂) T≈T₁) refl) (≈-sym ≈Se)
 
   U⇒A-tm (vlookup ⊢Γ′ x∈Γ')
     with U⇒A-⊢ ⊢Γ′
@@ -131,7 +138,7 @@ mutual
           helper (↝su t₁↝) ⊢sut₁
             with su-inv ⊢sut₁
           ... | refl , T₁≈N , ⊢t₁ = ≈-conv (su-cong (IHt t₁↝ ⊢t₁)) (≈-sym T₁≈N)
-  U⇒A-tm (N-E ⊢t′ ⊢t′₁ ⊢t′₂ ⊢t′₃) = {!   !}
+  U⇒A-tm (N-E ⊢Γ′ ⊢t′ ⊢t′₁ ⊢t′₂ ⊢t′₃) = {!   !}
   U⇒A-tm (Λ-I {Γ = Γ′} {S = S′} {T = T′} {i = i′} ⊢Γ′ ⊢S′ ⊢t′)
     with U⇒A-⊢ ⊢Γ′
        | U⇒A-tm ⊢S′
@@ -146,8 +153,8 @@ mutual
     with Γ₁≈Γ₂ ← ⊢≈-trans (⊢≈-sym Γ≈Γ₂) Γ≈Γ₁
     with IHS S↝₁S′ (ctxeq-tm Γ₁≈Γ₂ ⊢S₂)
   ... | S≈S₂
-    with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
-  ... | refl , _
+    with unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
+  ... | refl
     with ⊢T:Se-lvl ⊢S
   ... | refl = _ , _ , _ , _ , Γ↝Γ′ , ↝Λ {i = i′} S↝S′ t↝t′ , ↝Π {i = i′} {j = k} S↝S′ T↝T′ , Λ-I (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (∷-cong-simp (⊢≈-sym Γ≈Γ₂) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) (≈-sym S≈S₂) )) ⊢t) refl , helper
     where helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
@@ -158,8 +165,8 @@ mutual
           ... | ⊢∷ ⊢Γ ⊢S₁ , _
             with IHS S₁↝ (ctxeq-tm Γ≈Γ₁ ⊢S₁)
           ... | S≈S₁
-            with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
-          ... | refl , _
+            with unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
+          ... | refl
             with S∷Γ≈S₂∷Γ₂ ← ∷-cong-simp Γ≈Γ₂ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) (≈-trans (≈-sym S≈S₁) S≈S₂))
             with IHt t₁↝ (ctxeq-tm S∷Γ≈S₂∷Γ₂ ⊢t₁)
           ... | t≈t₁ = ≈-conv (≈-sym (Λ-cong ⊢S₁ (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) (≈-sym S≈S₁)) (ctxeq-≈ (⊢≈-sym S∷Γ≈S₂∷Γ₂) (≈-sym t≈t₁)) i≡maxj₁)) (≈-sym T₁≈)
@@ -192,14 +199,14 @@ mutual
        | IHS S↝₂S′ (ctxeq-tm (⊢≈-sym Γ₁≈Γ₃) ⊢S₂)
        | IHS S↝₃S′ (ctxeq-tm (⊢≈-trans (⊢≈-sym Γ≈Γ₄) Γ≈Γ₁) (proj₂ (presup-tm ⊢s)))
   ... | S≈S₁ | S≈S₂ | S≈S₃
-    with unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
-       | unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
-       | unique-typ ⊢S (proj₁ (proj₂ (presup-≈ S≈S₃)))
-  ... | refl , _ | refl , _ |  refl , _ 
+    with unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₁)))
+       | unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₂)))
+       | unique-lvl ⊢S (proj₁ (proj₂ (presup-≈ S≈S₃)))
+  ... | refl | refl | refl
     with IHT T↝T′ (ctxeq-tm (∷-cong-simp (⊢≈-trans (⊢≈-sym Γ≈Γ₃) Γ≈Γ₂) (ctxeq-≈ Γ₁≈Γ₃ (≈-trans (≈-sym S≈S₂) S≈S₁) )) ⊢T₁) 
   ... | T≈T₁
-    with unique-typ ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
-  ... | refl , _
+    with unique-lvl ⊢T (proj₁ (proj₂ (presup-≈ T≈T₁)))
+  ... | refl
        = _ , _ , _ , _ , Γ↝ , ↝$ r↝r′ s↝s′ , ↝sub T↝ (↝, ↝I s↝s′) , 
             Λ-E (ctxeq-tm (⊢≈-sym Γ≈Γ₁) ⊢S) (ctxeq-tm (∷-cong-simp (⊢≈-sym Γ≈Γ₂) (ctxeq-≈ Γ₁≈Γ₂ (≈-sym S≈S₁) )) ⊢T) 
                 (conv (ctxeq-tm (⊢≈-sym Γ≈Γ₃) ⊢r) (Π-cong (ctxeq-tm (⊢≈-sym Γ≈Γ₃) ⊢S₂) (ctxeq-≈ (⊢≈-sym Γ≈Γ₁) (≈-sym S≈S₂)) (ctxeq-≈ (∷-cong-simp (⊢≈-sym Γ≈Γ₂) (ctxeq-≈ Γ₁≈Γ₂ (≈-trans (≈-sym S≈S₁) S≈S₂)))  (≈-sym T≈T₁) ) refl))
@@ -257,8 +264,8 @@ mutual
     with IHS S↝₂ (proj₁ (proj₂ (presup-≈ (ctxeq-≈ Γ₃≈Γ₂ T≈S) )))
        | IHS S↝ (proj₂ (presup-tm (ctxeq-tm Γ₁≈Γ₂ ⊢t) ))
   ... | S₁≈S₂ | S₁≈S
-    with unique-typ (proj₁ (proj₂ (presup-≈ S₁≈S₂)))  (proj₁ (proj₂ (presup-≈ S₁≈S)))
-  ... | refl , _ 
+    with unique-lvl (proj₁ (proj₂ (presup-≈ S₁≈S₂)))  (proj₁ (proj₂ (presup-≈ S₁≈S)))
+  ... | refl
        = _ , _ , _ , _ , Γ↝₁ , t↝ , T↝ , conv ⊢t (≈-trans (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₂) (≈-trans (≈-sym S₁≈S) S₁≈S₂)) (ctxeq-≈ (⊢≈-sym Γ₁≈Γ₃) T≈S) ), IHt
 
   U⇒A-s-⊢ : U.Γ′ U.⊢s U.σ′ ∶ U.Δ′ →
@@ -301,7 +308,7 @@ mutual
   U⇒A-≈ (su-cong t′≈s′) with U⇒A-≈ t′≈s′
   ... | i , Γ , t , s , T , Γ↝ , t↝ , s↝ , ↝N , t≈s = _ , _ , _ , _ , _ , Γ↝ , ↝su t↝ , ↝su s↝ , ↝N , su-cong {!   !} 
   U⇒A-≈ (rec-cong x t≈s t≈s₁ t≈s₂ t≈s₃) = {!   !}
-  U⇒A-≈ (Λ-cong x t≈s t≈s₁) = {!   !}
+  U⇒A-≈ (Λ-cong ⊢Γ′ x t≈s t≈s₁) = {!   !}
   U⇒A-≈ ($-cong x x₁ t≈s t≈s₁) = {!   !}
   U⇒A-≈ (liftt-cong n t≈s) = {!   !}
   U⇒A-≈ (unlift-cong n x t≈s) = {!   !}

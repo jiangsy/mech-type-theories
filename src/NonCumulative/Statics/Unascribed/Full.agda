@@ -63,6 +63,7 @@ mutual
                -------------
                Γ ⊢ su t ∶ N
     N-E      : ∀ {i} →
+               ⊢ Γ →
                N ∷ Γ ⊢ T ∶ Se i →
                Γ ⊢ s ∶ T [| ze ] →
                T ∷ N ∷ Γ ⊢ r ∶ T [ (wk ∘ wk) , su (v 1) ] →
@@ -179,6 +180,7 @@ mutual
                  --------------------------------------------
                  Γ ⊢ rec T s r t ≈ rec T′ s′ r′ t′ ∶ T [| t ]
     Λ-cong     : ∀ {i} →
+                 ⊢ Γ →
                  Γ ⊢ S ∶ Se i →   -- remove after presupposition
                  Γ ⊢ S ≈ S′ ∶ Se i →
                  S ∷ Γ ⊢ t ≈ t′ ∶ T →
