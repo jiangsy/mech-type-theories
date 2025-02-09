@@ -11,7 +11,9 @@ open import Data.Nat.Properties as ℕₚ
 
 open import NonCumulative.Statics.Ascribed.Properties
 open import NonCumulative.Statics.Ascribed.Presup
+open import NonCumulative.Statics.Ascribed.Inversion
 open import NonCumulative.Statics.Ascribed.Refl
+open import NonCumulative.Statics.Ascribed.Simpl
 open import NonCumulative.Statics.Ascribed.CtxEquiv
 open import NonCumulative.Statics.Ascribed.Misc
 open import NonCumulative.Statics.Ascribed.Properties.Contexts
@@ -84,6 +86,29 @@ open import NonCumulative.Soundness.Fundamental fext
                     | ⟦⟧-det ↘⟦T′⟧′ ↘⟦T′⟧
                     with record { A∈𝕌 = T∈𝕌 ; rel = Trel } ← T∼⟦T⟧
                        | record { A∈𝕌 = T′∈𝕌 ; rel = T′rel } ← T′∼⟦T′⟧ = ≈-sym ([I]-≈ˡ-Se (≈-sym ([I]-≈ˡ-Se (®⇒≈ T′∈𝕌 (®-transport T∈𝕌 T′∈𝕌 T≈T′ Trel) T′rel))))
+
+-- N≈-[σ]-inv :
+--       Γ ⊢ T [ σ ] ≈ N ∶[ 1 ] Se 0 →
+--       Γ ⊢s σ ∶ Δ → 
+--       Δ ⊢ T ∶[ 1 ] Se 0 → -- seems we must have this , cannot be inverted from `Γ ⊢ T [ σ ] ≈ N ∶[ 1 ] Se 0`
+--       Δ ⊢ T ≈ N ∶[ 1 ] Se 0
+-- N≈-[σ]-inv T[σ]≈N ⊢σ ⊢T
+--   with ⊨Γ , rel ← fundamental-t≈t′ T[σ]≈N
+--   with ⊨Γ₁ , ⊨Δ , relσ ← fundamental-⊢σ ⊢σ
+--     with  ρ , _ , ρinit , ρinit′ , ρ∈ ← InitEnvs-related ⊨Γ₁
+--     with  ρ₁ , _ , ρinit₁ , ρinit₁′ , ρ∈′ ← InitEnvs-related ⊨Δ
+--     rewrite InitEnvs-det ρinit′ ρinit
+--     rewrite InitEnvs-det ρinit₁′ ρinit₁
+--       with rel (⊨-irrel ⊨Γ₁ ⊨Γ ρ∈)
+-- ... | record { ⟦T⟧ = .(U _) ; ⟦T′⟧ = .(U _) ; ↘⟦T⟧ = ⟦Se⟧ _ ; ↘⟦T′⟧ = ⟦Se⟧ _ ; T≈T′ = U refl _ } 
+--     , record { ⟦t⟧ = _ ; ⟦t′⟧ = .N ; ↘⟦t⟧ = ⟦[]⟧ ⟦σ⟧↘ ⟦T⟧↘N ; ↘⟦t′⟧ = ⟦N⟧ ; t≈t′ = t≈t′ } 
+--     rewrite 𝕌-wellfounded-≡-𝕌 1 (≤-reflexive (sym refl)) 
+--     with N i≡0 ← t≈t′ 
+--     with relσ ρ∈
+-- ... | record { ⟦σ⟧ = _ ; ⟦δ⟧ = _ ; ↘⟦σ⟧ = ↘⟦σ⟧ ; ↘⟦δ⟧ = ↘⟦δ⟧ ; σ≈δ = σ≈δ } 
+--     with ⟦⟧s-det ⟦σ⟧↘ ↘⟦σ⟧
+--        | ⟦⟧s-det ⟦σ⟧↘ ↘⟦δ⟧ 
+-- ... | refl | refl = {!   !}
 
 Π-inv′ : ∀ {i j k R} →
          Γ ⊢ Π (S ↙ j) (T ↙ k) ∶[ i ] R →
@@ -238,6 +263,33 @@ no-neutral-Se-gen {_} {u $ n} refl (Λ-E _ _ t∶T _ _) refl T≈ T′∈ = no-n
 no-neutral-Se-gen {_} {unlift u} refl (L-E _ _ t∶T) refl T≈ T′∈ = no-neutral-Se-gen {S = N} {S′ = N} {k = 0} {k′ = 0} refl t∶T refl (≈-refl (proj₂ (presup-tm t∶T))) (there (there (there (here refl))))
 no-neutral-Se-gen {_} {_} refl (conv ⊢t ≈T) refl T≈ T′∈ = no-neutral-Se-gen refl ⊢t refl (≈-trans ≈T T≈) T′∈
 
+t[σ]-inv′ : ∀ {i} →
+           Γ ⊢ t [ σ ] ∶[ i ] T →
+           Γ ⊢s σ ∶ Δ → 
+           ∃ λ S → Δ ⊢ t ∶[ i ] S × Γ ⊢ T ≈ S [ σ ] ∶[ 1 + i ] Se i
+t[σ]-inv′ ⊢t[σ] ⊢σ 
+  with t[σ]-inv ⊢t[σ]
+... | Δ′ , S , ⊢σ′ , ⊢t , T≈ = S , ctxeq-tm (unique-ctx ⊢σ′ ⊢σ) ⊢t , T≈
+
+-- T[σ]-inv′ : ∀ {i} →
+--            Γ ⊢ T [ σ ] ∶[ 1 + i ] Se i →
+--            Γ ⊢s σ ∶ Δ → 
+--            Δ ⊢ T ∶[ 1 + i ] Se i
+-- T[σ]-inv′ ⊢T[σ] ⊢σ 
+--   with t[σ]-inv ⊢T[σ]
+-- ... | Δ′ , S , ⊢σ′ , ⊢t , T≈ = {! ?  !}
+
+,-inv′ : ∀ {i Σ} → 
+  Γ ⊢s (σ , t ∶ T ↙ i) ∶ Δ →
+  Γ ⊢s σ ∶ Σ →
+  Γ ⊢ t ∶[ i ] sub T σ × ⊢ (T ↙ i) ∷ Σ ≈ Δ 
+,-inv′ ⊢σ,t ⊢σ
+  with ,-inv ⊢σ,t
+... | Σ′ , ⊢σ′ , ⊢t , T∷Σ′≈ 
+  with presup-⊢≈ T∷Σ′≈ 
+... | ⊢∷ ⊢Σ ⊢T , _
+  with unique-ctx ⊢σ ⊢σ′
+... | Σ≈Σ′ = ⊢t , ⊢≈-trans (∷-cong-simp Σ≈Σ′ (≈-refl (ctxeq-tm (⊢≈-sym Σ≈Σ′) ⊢T))) T∷Σ′≈
 
 no-neutral-Se : ∀ {i} →
                 (Se i ↙ (1 + i)) ∷ [] ⊢ Ne⇒Exp u ∶[ i ] v 0 →
