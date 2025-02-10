@@ -46,6 +46,22 @@ $-inv (conv ⊢rs T≈)
   with $-inv ⊢rs
 ... | j , k , S , T , ⊢r , ⊢s , refl , ≈Ts = _ , _ , _ , _ , ⊢r , ⊢s , refl , ≈-trans (≈-sym T≈) ≈Ts
 
+liftt-inv : ∀ {i n} →
+            Γ ⊢ liftt n t ∶[ i ] T →
+            ∃₂ λ j S → i ≡ n + j × Γ ⊢ t ∶[ j ] S × Γ ⊢ T ≈ Liftt n (S ↙ j) ∶[ 1 + i ] Se i 
+liftt-inv (L-I _ ⊢t) = _ , _ , refl , ⊢t , ≈-refl (Liftt-wf _ (proj₂ (presup-tm ⊢t))) 
+liftt-inv (conv ⊢liftt T≈) 
+  with liftt-inv ⊢liftt 
+... | j , S , refl ,  ⊢t , ≈Liftt = _ , _ , refl , ⊢t , ≈-trans (≈-sym T≈) ≈Liftt
+
+unlift-inv : ∀ {i} →
+             Γ ⊢ unlift t ∶[ i ] T →
+             ∃₂ λ j n → ∃ λ S → j ≡ n + i × Γ ⊢ t ∶[ j ] Liftt n (S ↙ i) × Γ ⊢ T ≈ S ∶[ 1 + i ] Se i  
+unlift-inv (L-E {i = i} n ⊢T ⊢t) = _ , _ , _ , refl , ⊢t , ≈-refl ⊢T
+unlift-inv (conv ⊢unliftt T≈) 
+  with unlift-inv ⊢unliftt
+... | j , n , S , refl , ⊢t , ≈S = _ , _ , _ , refl , ⊢t , ≈-trans (≈-sym T≈) ≈S
+
 t[σ]-inv : ∀ {i} →
            Γ ⊢ t [ σ ] ∶[ i ] T →
            ∃₂ λ Δ S → Γ ⊢s σ ∶ Δ × Δ ⊢ t ∶[ i ] S × Γ ⊢ T ≈ S [ σ ] ∶[ 1 + i ] Se i
@@ -101,5 +117,5 @@ Liftt-inv-gen (conv ⊢Liftt T′≈) T≈ = Liftt-inv-gen ⊢Liftt (≈-trans T
 Liftt-inv : ∀ {i j k} →
             Γ ⊢ Liftt j (S ↙ k) ∶[ 1 + i ] Se i →
             i ≡ j + k × Γ ⊢ S ∶[ 1 + k ] Se k
-Liftt-inv ⊢Liftt
+Liftt-inv ⊢Liftt  
   with ⊢Γ ← proj₁ (presup-tm ⊢Liftt) = Liftt-inv-gen ⊢Liftt (≈-refl (Se-wf _ ⊢Γ))

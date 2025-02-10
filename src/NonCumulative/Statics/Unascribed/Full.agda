@@ -90,6 +90,7 @@ mutual
                -------------------------
                Γ ⊢ liftt n t ∶ Liftt n T
     L-E      : ∀ {i} n →
+               ⊢ Γ → 
                Γ ⊢ T ∶ Se i →
                Γ ⊢ t ∶ Liftt n T →
                --------------------
