@@ -67,6 +67,9 @@ N[wk][wk]≈N : ⊢ lS ∷ lT ∷ Γ →
               lS ∷ lT ∷ Γ ⊢ N [ wk ] [ wk ] ≈ N ∶[ 1 ] Se 0
 N[wk][wk]≈N ⊢STΓ@(⊢∷ ⊢TΓ _) = N-[][] (s-wk ⊢TΓ) (s-wk ⊢STΓ)
 
+⊢wk∘wk-gen : ⊢ lS ∷ lT ∷ Γ → lS ∷ lT ∷ Γ ⊢s wk ∘ wk ∶ Γ
+⊢wk∘wk-gen ⊢STΓ@(⊢∷ ⊢SΓ@(⊢∷ ⊢Γ ⊢S) ⊢T) = s-∘ (s-wk ⊢STΓ) (s-wk ⊢SΓ)
+
 N[σ]≈N[τ] : Γ ⊢s σ ∶ Δ →
             Γ ⊢s τ ∶ Δ′ →
             Γ ⊢ N [ σ ] ≈ N [ τ ] ∶[ 1 ] Se 0
@@ -93,7 +96,7 @@ N[σ]≈N[τ] ⊢σ ⊢τ = ≈-trans (N-[] ⊢σ) (≈-sym (N-[] ⊢τ))
 ⊢[wk∘wk],su[v1] : ⊢ lT ∷ N₀ ∷ Γ → lT ∷ N₀ ∷ Γ ⊢s (wk ∘ wk) , su (v 1) ∶ N₀ ∶ N₀ ∷ Γ
 ⊢[wk∘wk],su[v1] ⊢TNΓ@(⊢∷ ⊢NΓ@(⊢∷ ⊢Γ ⊢N) ⊢T) = s-, ⊢wk∘wk ⊢N (conv-N-[]-sym (su-I (conv (vlookup ⊢TNΓ (there here)) (N[wk][wk]≈N ⊢TNΓ))) ⊢wk∘wk)
   where
-    ⊢wk∘wk = s-∘ (s-wk ⊢TNΓ) (s-wk ⊢NΓ)
+    ⊢wk∘wk = ⊢wk∘wk-gen ⊢TNΓ
 
 _[wk]*_ : Typ → ℕ → Typ
 _[wk]*_ T zero = T

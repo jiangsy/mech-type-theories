@@ -87,28 +87,6 @@ open import NonCumulative.Soundness.Fundamental fext
                     with record { A∈𝕌 = T∈𝕌 ; rel = Trel } ← T∼⟦T⟧
                        | record { A∈𝕌 = T′∈𝕌 ; rel = T′rel } ← T′∼⟦T′⟧ = ≈-sym ([I]-≈ˡ-Se (≈-sym ([I]-≈ˡ-Se (®⇒≈ T′∈𝕌 (®-transport T∈𝕌 T′∈𝕌 T≈T′ Trel) T′rel))))
 
--- N≈-[σ]-inv :
---       Γ ⊢ T [ σ ] ≈ N ∶[ 1 ] Se 0 →
---       Γ ⊢s σ ∶ Δ → 
---       Δ ⊢ T ∶[ 1 ] Se 0 → -- seems we must have this , cannot be inverted from `Γ ⊢ T [ σ ] ≈ N ∶[ 1 ] Se 0`
---       Δ ⊢ T ≈ N ∶[ 1 ] Se 0
--- N≈-[σ]-inv T[σ]≈N ⊢σ ⊢T
---   with ⊨Γ , rel ← fundamental-t≈t′ T[σ]≈N
---   with ⊨Γ₁ , ⊨Δ , relσ ← fundamental-⊢σ ⊢σ
---     with  ρ , _ , ρinit , ρinit′ , ρ∈ ← InitEnvs-related ⊨Γ₁
---     with  ρ₁ , _ , ρinit₁ , ρinit₁′ , ρ∈′ ← InitEnvs-related ⊨Δ
---     rewrite InitEnvs-det ρinit′ ρinit
---     rewrite InitEnvs-det ρinit₁′ ρinit₁
---       with rel (⊨-irrel ⊨Γ₁ ⊨Γ ρ∈)
--- ... | record { ⟦T⟧ = .(U _) ; ⟦T′⟧ = .(U _) ; ↘⟦T⟧ = ⟦Se⟧ _ ; ↘⟦T′⟧ = ⟦Se⟧ _ ; T≈T′ = U refl _ } 
---     , record { ⟦t⟧ = _ ; ⟦t′⟧ = .N ; ↘⟦t⟧ = ⟦[]⟧ ⟦σ⟧↘ ⟦T⟧↘N ; ↘⟦t′⟧ = ⟦N⟧ ; t≈t′ = t≈t′ } 
---     rewrite 𝕌-wellfounded-≡-𝕌 1 (≤-reflexive (sym refl)) 
---     with N i≡0 ← t≈t′ 
---     with relσ ρ∈
--- ... | record { ⟦σ⟧ = _ ; ⟦δ⟧ = _ ; ↘⟦σ⟧ = ↘⟦σ⟧ ; ↘⟦δ⟧ = ↘⟦δ⟧ ; σ≈δ = σ≈δ } 
---     with ⟦⟧s-det ⟦σ⟧↘ ↘⟦σ⟧
---        | ⟦⟧s-det ⟦σ⟧↘ ↘⟦δ⟧ 
--- ... | refl | refl = {!   !}
 
 Π-inv′ : ∀ {i j k R} →
          Γ ⊢ Π (S ↙ j) (T ↙ k) ∶[ i ] R →
@@ -339,4 +317,36 @@ consistency {_} {i} ⊢t  with fundamental-⊢t⇒⊩t ⊢t
       OT≈ = ≈-sym (proj₂ (proj₂ (proj₂ (proj₂ (Π-≈-inj T≈′)))))
 
       ⊢u′ : (Se i ↙ (1 + i)) ∷ [] ⊢ Ne⇒Exp (proj₁ (fa≈ 1)) ∶[ i ] v 0
-      ⊢u′ = conv (ctxeq-tm (∷-cong″ IT≈) ⊢u) OT≈    
+      ⊢u′ = conv (ctxeq-tm (∷-cong″ IT≈) ⊢u) OT≈
+
+-- inversion for natural numbers
+
+T[wk]≈N-inv : ∀ {i j k} →
+          Γ ⊢ T ∶[ j ] Se k →
+          (S ↙ i) ∷ Γ ⊢ (T [ wk ]) ≈ N ∶[ j ] Se k →
+          Γ ⊢ T ≈ N ∶[ j ] Se k × k ≡ 0 × j ≡ 1
+T[wk]≈N-inv ⊢T T≈N
+  with soundness ⊢T | completeness T≈N
+...  | W , record { envs = ρ ; init = ↘ρ ; nbe = record { ⟦t⟧ = ⟦T⟧ ; ⟦T⟧ = _ ; ↘⟦t⟧ = ↘⟦T⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = ↓⟦T⟧ } } , T≈
+     | _ , record { init = s-∷ ↘ρ′ _ ; nbe = record { ⟦t⟧ = .N ; ↘⟦t⟧ = ⟦[]⟧ ⟦wk⟧ ↘⟦T⟧′ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) refl } }
+         , record { nbe = record { ↘⟦t⟧ = ⟦N⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) _ } }
+     rewrite InitEnvs-det ↘ρ′ ↘ρ
+           | ⟦⟧-det ↘⟦T⟧ ↘⟦T⟧′
+           with ↓⟦T⟧
+...           | RU _ (RN _) _ = T≈ , refl , refl
+
+
+T[wkwk]≈N-inv : ∀ {R i j k l} →
+    Γ ⊢ T ∶[ j ] Se k →
+    (R ↙ l) ∷ (S ↙ i) ∷ Γ ⊢ (T [ wk ∘ wk ]) ≈ N ∶[ j ] Se k →
+    Γ ⊢ T ≈ N ∶[ j ] Se k × k ≡ 0 × j ≡ 1
+T[wkwk]≈N-inv ⊢T T[wk∘wk]≈N 
+  with ⊢T:Se-lvl ⊢T 
+... | refl
+  with ⊢RSΓ@(⊢∷ ⊢SΓ@(⊢∷ ⊢Γ ⊢S) ⊢R) ← proj₁ (presup-≈ T[wk∘wk]≈N )
+  with ≈-trans ([∘]-Se ⊢T (s-wk ⊢SΓ) (s-wk ⊢RSΓ)) (T[wk∘wk]≈N )
+... | T[wk][wk]≈N 
+  with T[wk]≈N-inv (t[σ]-Se ⊢T (s-wk ⊢SΓ)) T[wk][wk]≈N 
+... | T[wk]≈N  , refl , refl 
+  with T[wk]≈N-inv ⊢T T[wk]≈N
+... | T≈N , _ , _ = T≈N , refl , refl
