@@ -96,7 +96,13 @@ mutual
     with ⊢T:Se-lvl ⊢T
   ... | refl = _ , _ , _ , _ , Γ↝ , ↝Liftt T↝ , ↝Se , Liftt-wf _ ⊢T , helper
     where helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
-          helper (↝Liftt t₁↝) ⊢t₁ = {!   !}
+          helper (↝Liftt t₁↝) ⊢Liftt₁ 
+            with Liftt-inv′ ⊢Liftt₁ 
+          ... | refl , ⊢Tᵢ , ≈Se 
+            with IHT t₁↝ ⊢Tᵢ
+          ... | T≈Tᵢ 
+            with unique-lvl ⊢T (proj₁ (proj₂ (presup-≈ T≈Tᵢ)))
+          ... | refl = ≈-conv (Liftt-cong _ T≈Tᵢ) (≈-sym ≈Se)
   U⇒A-tm (Π-wf {Γ = Γ′} {S = S′} {T = T′} ⊢Γ′ ⊢S′ ⊢T′ k≡maxij)
     with U⇒A-⊢ ⊢Γ′
        | U⇒A-tm ⊢S′

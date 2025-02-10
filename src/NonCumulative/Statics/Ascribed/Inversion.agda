@@ -106,6 +106,14 @@ rec-inv (conv ⊢rect R≈)
 Π-inv ⊢Π
   with ⊢Γ ← proj₁ (presup-tm ⊢Π) = Π-inv-gen ⊢Π (≈-refl (Se-wf _ ⊢Γ))
 
+Π-inv′ : ∀ {i j k R} →
+         Γ ⊢ Π (S ↙ j) (T ↙ k) ∶[ i ] R →
+         i ≡ 1 + max j k × Γ ⊢ R ≈ Se (max j k) ∶[ 2 + max j k ] Se (1 + max j k) × Γ ⊢ S ∶[ 1 + j ] Se j × (S ↙ j) ∷ Γ ⊢ T ∶[ 1 + k ] Se k
+Π-inv′ (Π-wf ⊢S ⊢T refl) = refl , ≈-refl (Se-wf _ (proj₁ (presup-tm ⊢S))) , ⊢S , ⊢T
+Π-inv′ (conv ⊢Π ≈R) 
+  with Π-inv′ ⊢Π 
+... | refl , ≈Se , ⊢S , ⊢T = refl , ≈-trans (≈-sym ≈R) ≈Se , ⊢S , ⊢T
+
 Liftt-inv-gen : ∀ {i j k} →
                 Γ ⊢ Liftt j (S ↙ k) ∶[ 1 + i ] T →
                 Γ ⊢ T ≈ Se i ∶[ 2 + i ] Se (1 + i) →
@@ -119,3 +127,11 @@ Liftt-inv : ∀ {i j k} →
             i ≡ j + k × Γ ⊢ S ∶[ 1 + k ] Se k
 Liftt-inv ⊢Liftt  
   with ⊢Γ ← proj₁ (presup-tm ⊢Liftt) = Liftt-inv-gen ⊢Liftt (≈-refl (Se-wf _ ⊢Γ))
+
+Liftt-inv′ : ∀ {i j k R} →
+             Γ ⊢ Liftt j (S ↙ k) ∶[ i ] R →
+             i ≡ 1 + j + k × Γ ⊢ S ∶[ 1 + k ] Se k × Γ ⊢ R ≈ Se (j + k) ∶[ 2 + j + k ] Se (1 + j + k) 
+Liftt-inv′ (Liftt-wf _ ⊢T) = refl , ⊢T , ≈-refl (Se-wf _ (proj₁ (presup-tm ⊢T)))
+Liftt-inv′ (conv ⊢LifttT ≈S) 
+  with Liftt-inv′ ⊢LifttT 
+... | refl , ⊢T , R≈ = refl , ⊢T , ≈-trans (≈-sym ≈S) R≈

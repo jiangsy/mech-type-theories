@@ -87,15 +87,6 @@ open import NonCumulative.Soundness.Fundamental fext
                     with record { A∈𝕌 = T∈𝕌 ; rel = Trel } ← T∼⟦T⟧
                        | record { A∈𝕌 = T′∈𝕌 ; rel = T′rel } ← T′∼⟦T′⟧ = ≈-sym ([I]-≈ˡ-Se (≈-sym ([I]-≈ˡ-Se (®⇒≈ T′∈𝕌 (®-transport T∈𝕌 T′∈𝕌 T≈T′ Trel) T′rel))))
 
-
-Π-inv′ : ∀ {i j k R} →
-         Γ ⊢ Π (S ↙ j) (T ↙ k) ∶[ i ] R →
-         i ≡ 1 + max j k × Γ ⊢ R ≈ Se (max j k) ∶[ 2 + max j k ] Se (1 + max j k) × Γ ⊢ S ∶[ 1 + j ] Se j × (S ↙ j) ∷ Γ ⊢ T ∶[ 1 + k ] Se k
-Π-inv′ (Π-wf ⊢S ⊢T refl) = refl , ≈-refl (Se-wf _ (proj₁ (presup-tm ⊢S))) , ⊢S , ⊢T
-Π-inv′ (conv ⊢Π ≈R) 
-  with Π-inv′ ⊢Π 
-... | refl , ≈Se , ⊢S , ⊢T = refl , ≈-trans (≈-sym ≈R) ≈Se , ⊢S , ⊢T
-
 Λ-inv-gen : ∀ {i i′ j′ k R} →
          Γ ⊢ Λ (S ↙ i) t ∶[ k ] R → 
          Γ ⊢ R ≈ Π (S′ ↙ i′) (T′ ↙ j′) ∶[ 1 + k ] Se k →

@@ -66,9 +66,20 @@ mutual
                 Γ A.⊢ t ≈ t₁ ∶[ i₁ ] T₁)
   U⇒A-tm (N-wf ⊢Γ′) = {!   !} -- done
   U⇒A-tm (Se-wf i ⊢Γ′) = {!   !} -- done
-  U⇒A-tm (Liftt-wf n ⊢T′) = {!   !} -- done
+  U⇒A-tm (Liftt-wf n ⊢T′)
+    with U⇒A-tm ⊢T′
+  ... | _ , Γ , T , .(Se _) , Γ↝ , T↝ , ↝Se , ⊢T , IHT
+    with ⊢T:Se-lvl ⊢T
+  ... | refl = _ , _ , _ , _ , Γ↝ , ↝Liftt T↝ , ↝Se , Liftt-wf _ ⊢T , helper
+    where helper : ∀ {t₁ i₁ T₁} → t₁ ↝ _ → Γ A.⊢ t₁ ∶[ i₁ ] T₁ → Γ ⊢ _ ≈ t₁ ∶[ i₁ ] T₁
+          helper (↝Liftt t₁↝) ⊢Liftt₁ 
+            with Liftt-inv′ ⊢Liftt₁ 
+          ... | refl , ⊢Tᵢ , ≈Se 
+            with IHT t₁↝ ⊢Tᵢ
+          ... | T≈Tᵢ 
+            with unique-lvl ⊢T (proj₁ (proj₂ (presup-≈ T≈Tᵢ)))
+          ... | refl = ≈-conv (Liftt-cong _ T≈Tᵢ) (≈-sym ≈Se)
   U⇒A-tm (Π-wf {Γ = Γ′} {S = S′} {T = T′} ⊢Γ′ ⊢S′ ⊢T′ k≡maxij) = {!   !} -- done
-
   U⇒A-tm (vlookup ⊢Γ′ x∈Γ') = {!   !} -- done
   U⇒A-tm (ze-I ⊢Γ′) = {!   !} -- done
   U⇒A-tm (su-I {t = t′} ⊢t′) = {!   !} -- done
@@ -188,4 +199,4 @@ mutual
           ------------------
            ∃₂ λ Γ Δ → (Γ [↝] U.Γ′) × (Δ [↝] U.Δ′) × A.⊢ Γ ≈ Δ
   U⇒A-⊢≈ []-≈ = {!   !}   
-  U⇒A-⊢≈ (∷-cong Γ′≈Δ′ x x₁ x₂ x₃) = {!   !}             
+  U⇒A-⊢≈ (∷-cong Γ′≈Δ′ x x₁ x₂ x₃) = {!   !}              
