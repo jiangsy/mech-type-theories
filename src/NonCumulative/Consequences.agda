@@ -336,17 +336,35 @@ T[wk]≈N-inv ⊢T T≈N
 ...           | RU _ (RN _) _ = T≈ , refl , refl
 
 
-T[wkwk]≈N-inv : ∀ {R i j k l} →
-    Γ ⊢ T ∶[ j ] Se k →
-    (R ↙ l) ∷ (S ↙ i) ∷ Γ ⊢ (T [ wk ∘ wk ]) ≈ N ∶[ j ] Se k →
-    Γ ⊢ T ≈ N ∶[ j ] Se k × k ≡ 0 × j ≡ 1
-T[wkwk]≈N-inv ⊢T T[wk∘wk]≈N 
+-- T[wkwk]≈N-inv : ∀ {R i j k l} →
+--     Γ ⊢ T ∶[ j ] Se k →
+--     (R ↙ l) ∷ (S ↙ i) ∷ Γ ⊢ (T [ wk ∘ wk ]) ≈ N ∶[ j ] Se k →
+--     Γ ⊢ T ≈ N ∶[ j ] Se k × k ≡ 0 × j ≡ 1
+-- T[wkwk]≈N-inv ⊢T T[wk∘wk]≈N 
+--   with ⊢T:Se-lvl ⊢T 
+-- ... | refl
+--   with ⊢RSΓ@(⊢∷ ⊢SΓ@(⊢∷ ⊢Γ ⊢S) ⊢R) ← proj₁ (presup-≈ T[wk∘wk]≈N )
+--   with ≈-trans ([∘]-Se ⊢T (s-wk ⊢SΓ) (s-wk ⊢RSΓ)) (T[wk∘wk]≈N )
+-- ... | T[wk][wk]≈N 
+--   with T[wk]≈N-inv (t[σ]-Se ⊢T (s-wk ⊢SΓ)) T[wk][wk]≈N 
+-- ... | T[wk]≈N , refl , refl 
+--   with T[wk]≈N-inv ⊢T T[wk]≈N
+-- ... | T≈N , _ , _ = T≈N , refl , refl
+
+T[wkwk]≈N-inv : ∀ {R i l} →
+    Γ ⊢ T ∶[ 1 ] Se 0 →
+    (R ↙ l) ∷ (S ↙ i) ∷ Γ ⊢ (sub T (wk ∘ wk)) ≈ N ∶[ 1 ] Se 0 →
+    Γ ⊢ T ≈ N ∶[ 1 ] Se 0
+T[wkwk]≈N-inv {T = T} ⊢T T[wk∘wk]≈N 
   with ⊢T:Se-lvl ⊢T 
 ... | refl
-  with ⊢RSΓ@(⊢∷ ⊢SΓ@(⊢∷ ⊢Γ ⊢S) ⊢R) ← proj₁ (presup-≈ T[wk∘wk]≈N )
-  with ≈-trans ([∘]-Se ⊢T (s-wk ⊢SΓ) (s-wk ⊢RSΓ)) (T[wk∘wk]≈N )
-... | T[wk][wk]≈N 
-  with T[wk]≈N-inv (t[σ]-Se ⊢T (s-wk ⊢SΓ)) T[wk][wk]≈N 
-... | T[wk]≈N  , refl , refl 
-  with T[wk]≈N-inv ⊢T T[wk]≈N
-... | T≈N , _ , _ = T≈N , refl , refl
+  with ⊢RSΓ@(⊢∷ ⊢SΓ@(⊢∷ ⊢Γ ⊢S) ⊢R) ← proj₁ (presup-≈ T[wk∘wk]≈N ) = T≈N
+  where 
+    T[wk][wk]≈N : (_ ↙ _) ∷ (_ ↙ _) ∷ _ ⊢ (sub (sub _ wk) wk) ≈ N ∶[ _ ] Se _
+    T[wk][wk]≈N = ≈-trans ([∘]-Se ⊢T (s-wk ⊢SΓ) (s-wk ⊢RSΓ)) (T[wk∘wk]≈N )
+
+    T[wk]≈N : _ ⊢ sub _ wk ≈ N ∶[ _ ] Se _
+    T[wk]≈N = proj₁ ( T[wk]≈N-inv (t[σ]-Se ⊢T (s-wk ⊢SΓ)) T[wk][wk]≈N)
+
+    T≈N : _ ⊢ _ ≈ N ∶[ _ ] Se _
+    T≈N =  proj₁ ( T[wk]≈N-inv ⊢T T[wk]≈N)
