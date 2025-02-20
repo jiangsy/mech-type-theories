@@ -30,37 +30,32 @@ mutual
   data Rf_-_↘_ : ℕ → Df → Nf → Set where
     RU  : ∀ {i j} n →
           Rty n - A at i ↘ W →
-          j ≡ suc i →
           ---------------------
           Rf n - ↓ j (U i) A ↘ W
-    Rze : ∀ n →
-          Rf n - ↓ 0 N ze ↘ ze
-    Rsu : ∀ n →
-          Rf n - ↓ 0 N a ↘ w →
+    Rze : ∀ {i} n →
+          Rf n - ↓ i N ze ↘ ze
+    Rsu : ∀  {i} n →
+          Rf n - ↓ i N a ↘ w →
           ---------------------------
-          Rf n - ↓ 0 N (su a) ↘ (su w)
+          Rf n - ↓ i N (su a) ↘ (su w)
     RΛ  : ∀ {i j k} n →
           Rty n - A at i ↘ W →
           a ∙ l′ i A n ↘ b →
           ⟦ T ⟧ ρ ↦ l′ i A n ↘ B →
           Rf 1 + n - ↓ j B b ↘ w →
-          k ≡ max i j →
           ------------------------------
           Rf n - ↓ k (Π i A (T ↙ j) ρ) a ↘ Λ (W ↙ i) w
     Rli : ∀ {i j k} n →
           unli∙ a ↘ b →
           Rf n - ↓ j A b ↘ w →
-          k ≡ i + j →
           ---------------------------
           Rf n - ↓ k (Li i j A) a ↘ liftt i w
-    RN  : ∀ {i} n →
+    RN  : ∀ {i j} n →
           Re n - c ↘ u →
           --------------------------
-          Rf n - ↓ 0 N (↑ i A c) ↘ ne u
+          Rf n - ↓ j N (↑ i A c) ↘ ne u
     Rne : ∀ {i j k} n →
           Re n - c ↘ u →
-          k ≡ suc j →
-          i ≡ j →
           ----------------------------------
           Rf n - ↓ i (↑ k A C) (↑ j A′ c) ↘ ne u
 
@@ -94,43 +89,39 @@ mutual
 
   data Rty_-_at_↘_ : ℕ → D → ℕ → Nf → Set where
     RU  : ∀ {i j} n →
-          j ≡ suc i →
           Rty n - U i at j ↘ Se i
-    RN  : ∀ n →
-          Rty n - N at 0 ↘ N
+    RN  : ∀ {i} n →
+          Rty n - N at i ↘ N
     RΠ  : ∀ {i j k} n →
           Rty n - A at i ↘ W →
           ⟦ T ⟧ ρ ↦ l′ i A n ↘ B →
           Rty 1 + n - B at j ↘ W′ →
-          k ≡ max i j →
           ------------------------------
           Rty n - Π i A (T ↙ j) ρ at k ↘ Π (W ↙ i) (W′ ↙ j)
     RL  : ∀ {i j k} n →
           Rty n - A at j ↘ W →
-          k ≡ i + j →
           ------------------------------
           Rty n - Li i j A at k ↘ Liftt i (W ↙ j)
     Rne : ∀ {i j} n →
           Re n - c ↘ V →
-          i ≡ suc j →
           ---------------------
           Rty n - ↑ i A c at j ↘ ne V
 
-pattern RU′ n ↘W = RU n ↘W refl
-pattern Rne′ n ↘u = Rne n ↘u refl refl
+pattern RU′ n ↘W = RU n ↘W
+pattern Rne′ n ↘u = Rne n ↘u
 
 -- All readback functions are deterministic.
 mutual
   Rf-det : ∀ {n} → Rf n - d ↘ w → Rf n - d ↘ w′ → w ≡ w′
-  Rf-det (RU _ ↘W _) (RU _ ↘W′ _)       = Rty-det ↘W ↘W′
+  Rf-det (RU _ ↘W) (RU _ ↘W′)           = Rty-det ↘W ↘W′
   Rf-det (Rze _) (Rze _)                = refl
   Rf-det (Rsu _ ↘w) (Rsu _ ↘w′)         = cong su (Rf-det ↘w ↘w′)
-  Rf-det (RΛ _ ↘W ↘a ↘A ↘w _) (RΛ _ ↘W′ ↘a′ ↘A′ ↘w′ _)
+  Rf-det (RΛ _ ↘W ↘a ↘A ↘w) (RΛ _ ↘W′ ↘a′ ↘A′ ↘w′)
     rewrite ap-det ↘a ↘a′
           | ⟦⟧-det ↘A ↘A′               = cong₂ Λ (cong (_↙ _) (Rty-det ↘W ↘W′)) (Rf-det ↘w ↘w′)
   Rf-det (RN _ ↘u) (RN _ ↘u′)           = cong ne (Re-det ↘u ↘u′)
-  Rf-det (Rne _ ↘u _ _) (Rne _ ↘u′ _ _) = cong ne (Re-det ↘u ↘u′)
-  Rf-det (Rli _ ↘a ↘w _) (Rli _ ↘b ↘w′ _)
+  Rf-det (Rne _ ↘u) (Rne _ ↘u′) = cong ne (Re-det ↘u ↘u′)
+  Rf-det (Rli _ ↘a ↘w) (Rli _ ↘b ↘w′)
     rewrite unli-det ↘a ↘b              = cong (liftt _) (Rf-det ↘w ↘w′)
 
   Re-det : ∀ {n} → Re n - c ↘ u → Re n - c ↘ u′ → u ≡ u′
@@ -148,14 +139,14 @@ mutual
   Re-det (Runli _ ↘u) (Runli _ ↘u′)  = cong unlift (Re-det ↘u ↘u′)
 
   Rty-det : ∀ {n i} → Rty n - A at i ↘ W → Rty n - A at i ↘ W′ → W ≡ W′
-  Rty-det (RU _ _) (RU _ _)          = refl
+  Rty-det (RU _) (RU _)              = refl
   Rty-det (RN _) (RN _)              = refl
-  Rty-det (RΠ _ ↘W ↘B ↘W′ _) (RΠ _ ↘W″ ↘B′ ↘W‴ _)
+  Rty-det (RΠ _ ↘W ↘B ↘W′) (RΠ _ ↘W″ ↘B′ ↘W‴)
     rewrite Rty-det ↘W ↘W″
           | ⟦⟧-det ↘B ↘B′
           | Rty-det ↘W′ ↘W‴          = refl
-  Rty-det (Rne _ ↘V _) (Rne _ ↘V′ _) = cong ne (Re-det ↘V ↘V′)
-  Rty-det (RL _ ↘W _) (RL _ ↘W′ _)   = cong (λ W → Liftt _ (W ↙ _)) (Rty-det ↘W ↘W′)
+  Rty-det (Rne _ ↘V) (Rne _ ↘V′) = cong ne (Re-det ↘V ↘V′)
+  Rty-det (RL _ ↘W) (RL _ ↘W′)   = cong (λ W → Liftt _ (W ↙ _)) (Rty-det ↘W ↘W′)
 
 -- Normalization by evaluation where an evaluation environment is passed externally
 record NbEEnvs n ρ t i T w : Set where

@@ -311,19 +311,19 @@ consistency-gen {_} {i} {j} ⊢t
 
 -- inversion for natural numbers
 
-≈-N-inv : ∀ {i j k} →
-          Γ ⊢ T ∶[ j ] Se k →
-          (S ↙ i) ∷ Γ ⊢ (T [ wk ]) ≈ N ∶[ j ] Se k →
-          Γ ⊢ T ≈ N ∶[ 1 ] Se 0 × j ≡ 1 × k ≡ 0
-≈-N-inv ⊢T T≈N
-  with soundness ⊢T | completeness T≈N
-...  | W , record { envs = ρ ; init = ↘ρ ; nbe = record { ⟦t⟧ = ⟦T⟧ ; ⟦T⟧ = _ ; ↘⟦t⟧ = ↘⟦T⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = ↓⟦T⟧ } } , T≈
-     | _ , record { init = s-∷ ↘ρ′ _ ; nbe = record { ⟦t⟧ = .N ; ↘⟦t⟧ = ⟦[]⟧ ⟦wk⟧ ↘⟦T⟧′ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) refl } }
-         , record { nbe = record { ↘⟦t⟧ = ⟦N⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) _ } }
-     rewrite InitEnvs-det ↘ρ′ ↘ρ
-           | ⟦⟧-det ↘⟦T⟧ ↘⟦T⟧′
-           with ↓⟦T⟧
-...           | RU _ (RN _) _ = T≈ , refl , refl
+-- ≈-N-inv : ∀ {i j k} →
+--           Γ ⊢ T ∶[ j ] Se k →
+--           (S ↙ i) ∷ Γ ⊢ (T [ wk ]) ≈ N ∶[ j ] Se k →
+--           Γ ⊢ T ≈ N ∶[ 1 ] Se 0 × j ≡ 1 × k ≡ 0
+-- ≈-N-inv ⊢T T≈N
+--   with soundness ⊢T | completeness T≈N
+-- ...  | W , record { envs = ρ ; init = ↘ρ ; nbe = record { ⟦t⟧ = ⟦T⟧ ; ⟦T⟧ = _ ; ↘⟦t⟧ = ↘⟦T⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = ↓⟦T⟧ } } , T≈
+--      | _ , record { init = s-∷ ↘ρ′ _ ; nbe = record { ⟦t⟧ = .N ; ↘⟦t⟧ = ⟦[]⟧ ⟦wk⟧ ↘⟦T⟧′ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) _ } }
+--          , record { nbe = record { ↘⟦t⟧ = ⟦N⟧ ; ↘⟦T⟧ = ⟦Se⟧ .0 ; ↓⟦t⟧ = RU _ (RN _) _ } }
+--      rewrite InitEnvs-det ↘ρ′ ↘ρ
+--            | ⟦⟧-det ↘⟦T⟧ ↘⟦T⟧′
+--            with ↓⟦T⟧
+-- ...           | RU _ (RN _) = T≈ , refl , refl
 
 N:T-inv′ : ∀ {i} →
            Γ ⊢ N ∶[ i ] T →

@@ -100,22 +100,22 @@ private
               with El⊆Top _ (λ l<k → real (≤-trans l<k (m≤n⊔m j k))) T≈T′ fa≈fa′ (1 + n)
                  | 𝕌⊆TopT _ (λ l<j → real (≤-trans l<j (m≤m⊔n j k))) iA n
       ...        | w , ↘w , ↘w′
-                 | W , ↘W , ↘W′ = Λ (W ↙ j) w , RΛ n ↘W ↘fa ↘⟦T⟧ ↘w refl , RΛ n ↘W′ ↘fa′ ↘⟦T′⟧ ↘w′ refl
+                 | W , ↘W , ↘W′ = Λ (W ↙ j) w , RΛ n ↘W ↘fa ↘⟦T⟧ ↘w , RΛ n ↘W′ ↘fa′ ↘⟦T′⟧ ↘w′
       El⊆Top i real (L′ {j} {k} A≈A′) a≈a′ n
         rewrite 𝕌-wf-gen k (Li≤′ j k refl)
         with a≈a′
       ...  | record { ua = ua ; ub = ub ; ↘ua = ↘ua ; ↘ub = ↘ub ; ua≈ub = ua≈ub }
            with El⊆Top _ (λ l<k → real (≤-trans l<k (m≤n+m k j))) A≈A′ ua≈ub n
-      ...     | w , ↘w , ↘w′                  = liftt j w , Rli n ↘ua ↘w refl , Rli n ↘ub ↘w′ refl
+      ...     | w , ↘w , ↘w′                  = liftt j w , Rli n ↘ua ↘w , Rli n ↘ub ↘w′
 
       𝕌⊆TopT : ∀ i
                (real : ∀ {j} → j < i → ∀ {A A′} (A≈A′ : A ≈ A′ ∈ 𝕌 j) → A ≈ A′ ∈ TopT j)
                (A≈A′ : A ≈ A′ ∈ 𝕌 i) → A ≈ A′ ∈ TopT i
       𝕌⊆TopT i real (ne′ C≈C′) n
         with C≈C′ n
-      ...  | V , ↘V , ↘V′        = ne V , Rne n ↘V refl , Rne n ↘V′ refl
+      ...  | V , ↘V , ↘V′        = ne V , Rne n ↘V , Rne n ↘V′
       𝕌⊆TopT i real N′ n         = N , RN n , RN n
-      𝕌⊆TopT i real (U′ {j}) n   = Se j , RU n refl , RU n refl
+      𝕌⊆TopT i real (U′ {j}) n   = Se j , RU n , RU n
       𝕌⊆TopT i real (Π′ {j} {k} iA RT) n
         rewrite 𝕌-wf-gen j (ΠI≤′ j k refl)
         rewrite 𝕌-wf-gen k (ΠO≤′ j k refl)
@@ -126,11 +126,11 @@ private
               with 𝕌⊆TopT _ (λ l<j → real (≤-trans l<j (m≤m⊔n j k))) iA n
                  | 𝕌⊆TopT _ (λ l<k → real (≤-trans l<k (m≤n⊔m j k))) T≈T′ (1 + n)
       ...        | W , ↘W , ↘W′
-                 | W₁ , ↘W₁ , ↘W₁′ = Π (W ↙ j) (W₁ ↙ k) , RΠ n ↘W ↘⟦T⟧ ↘W₁ refl , RΠ n ↘W′ ↘⟦T′⟧ ↘W₁′ refl
+                 | W₁ , ↘W₁ , ↘W₁′ = Π (W ↙ j) (W₁ ↙ k) , RΠ n ↘W ↘⟦T⟧ ↘W₁ , RΠ n ↘W′ ↘⟦T′⟧ ↘W₁′
       𝕌⊆TopT i real (L′ {j} {k} A≈A′) n
         rewrite 𝕌-wf-gen k (Li≤′ j k refl)
         with 𝕌⊆TopT _ (λ l<k → real (≤-trans l<k (m≤n+m k j))) A≈A′ n
-      ...  | W , ↘W , ↘W′        = Liftt j (W ↙ k) , RL n ↘W refl , RL n ↘W′ refl
+      ...  | W , ↘W , ↘W′        = Liftt j (W ↙ k) , RL n ↘W , RL n ↘W′
 
 
 
