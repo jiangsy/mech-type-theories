@@ -47,8 +47,8 @@ private
         = record
         { fa     = [ ⟦T⟧ ↙ k ] c $′ ↓ j A a
         ; fa′    = [ ⟦T′⟧ ↙ k ] c′ $′ ↓ j A′ b
-        ; ↘fa    = $∙ A c ↘⟦T⟧ refl
-        ; ↘fa′   = $∙ A′ c′ ↘⟦T′⟧ refl
+        ; ↘fa    = $∙ A c ↘⟦T⟧
+        ; ↘fa′   = $∙ A′ c′ ↘⟦T′⟧
         ; fa≈fa′ = Bot⊆El k (λ j′<i → real (≤-trans j′<i (m≤n⊔m j k))) T≈T′ helper
         }
         where helper : (c $ ↓ j A a) ≈ c′ $ ↓ j A′ b ∈ Bot
@@ -61,8 +61,8 @@ private
         = record
         { ua    = ↑ k A (unli c)
         ; ub    = ↑ k A′ (unli c′)
-        ; ↘ua   = unli↘ refl
-        ; ↘ub   = unli↘ refl
+        ; ↘ua   = unli↘
+        ; ↘ub   = unli↘
         ; ua≈ub = Bot⊆El k (λ l<k → real (≤-trans l<k (m≤n+m k j))) A≈A′ helper
         }
         where helper : unli c ≈ unli c′ ∈ Bot

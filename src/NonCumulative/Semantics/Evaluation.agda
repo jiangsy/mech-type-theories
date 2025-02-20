@@ -19,7 +19,6 @@ mutual
          Λ t ρ ∙ a ↘ b
     $∙ : ∀ {i j k} A c →
          ⟦ T ⟧ ρ ↦ a ↘ B →
-         k ≡ max i j →
          -----------------------------------
          ↑ k (Π i A (T ↙ j) ρ) c ∙ a ↘ ↑ j B (c $ ↓ i A a)
 
@@ -36,7 +35,7 @@ mutual
 
   data unli∙_↘_ : D → D → Set where
     li↘   : ∀ {i} → unli∙ li i a ↘ a
-    unli↘ : ∀ {i j k} → k ≡ i + j → unli∙ ↑ k (Li i j A) c ↘ ↑ j A (unli c)
+    unli↘ : ∀ {i j k} → unli∙ ↑ k (Li i j A) c ↘ ↑ j A (unli c)
 
   data ⟦_⟧_↘_ : Exp → Env → D → Set where
     ⟦N⟧     : ⟦ N ⟧ ρ ↘ N
@@ -101,7 +100,7 @@ pattern ⟦[[wk∘wk],su[v1]]⟧ ↘T = ⟦[]⟧ (⟦,⟧ (⟦∘⟧ ⟦wk⟧ �
 mutual
   ap-det : f ∙ a ↘ b → f ∙ a ↘ b′ → b ≡ b′
   ap-det (Λ∙ ↘b) (Λ∙ ↘b′) = ⟦⟧-det ↘b ↘b′
-  ap-det ($∙ A c ↘B eq) ($∙ .A .c ↘B′ eq′)
+  ap-det ($∙ A c ↘B) ($∙ .A .c ↘B′)
     rewrite ⟦⟧-det ↘B ↘B′ = refl
 
   rec-det : rec∙ lT , a , r , ρ , b ↘ a′ → rec∙ lT , a , r , ρ , b ↘ b′ → a′ ≡ b′
@@ -114,7 +113,7 @@ mutual
 
   unli-det : unli∙ a ↘ b → unli∙ a ↘ b′ → b ≡ b′
   unli-det li↘ li↘             = refl
-  unli-det (unli↘ _) (unli↘ _) = refl
+  unli-det unli↘ unli↘         = refl
 
   ⟦⟧-det : ⟦ t ⟧ ρ ↘ a → ⟦ t ⟧ ρ ↘ b → a ≡ b
   ⟦⟧-det ⟦N⟧ ⟦N⟧               = refl

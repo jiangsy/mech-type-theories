@@ -156,7 +156,7 @@ private
           helper {Δ} {σ = σ} {b = b} {s} ⊢σ jA RT b∈ s® Gkrip
             with ⊢Δ , _ ← presup-s (⊢w⇒⊢s ⊢σ) = record 
               { fa = [ ΠRT.⟦T⟧ (RT b∈) ↙ k ] c $′ ↓ j A b 
-              ; ↘fa = $∙ A c (ΠRT.↘⟦T⟧ (RT b∈)) refl
+              ; ↘fa = $∙ A c (ΠRT.↘⟦T⟧ (RT b∈))
               ; ®fa = ®↓El⇒®El (λ l<k → rc (ΠO≤ refl l<k)) (ΠRT.T≈T′ (RT b∈)) (record 
                 { t∶T = conv (Λ-E ⊢ITσ ⊢OTqσ t∶IT[σ]OT[qσ] ⊢s refl) (≈-sym ([]-q-∘-,′ ⊢OT ⊢σ′ ⊢s)) 
                 ; T∼A = ΠRel.OT-rel (Gkrip ⊢σ) s® b∈ 
@@ -211,7 +211,7 @@ private
           ; ⊢UT = ⊢UT 
           ; a∈El = El-L-𝕌 kA refl (El-refl (L-𝕌 kA refl) (Bot⊆El (L-𝕌 kA refl) c∈⊥))
           ; T≈ = T≈ 
-          ; krip = λ ⊢σ → record { ua = ↑ k A (unli c) ; ↘ua = unli↘ refl ; ®ua = helper ⊢σ kA (G.krip ⊢σ) } 
+          ; krip = λ ⊢σ → record { ua = ↑ k A (unli c) ; ↘ua = unli↘ ; ®ua = helper ⊢σ kA (G.krip ⊢σ) } 
           }
         where
           module G = GluL T∼A
