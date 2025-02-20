@@ -174,7 +174,7 @@ module PERDef where
     El : ∀ i (Univ : ∀ {j} → j < i → Ty) → A ≈ B ∈ 𝕌 i Univ → Ty
     El i Univ (ne C≈C′ _ _)   = Neu i
     El i Univ (N _)           = Nat
-    El i Univ (U eq _)        = Univ (≤-reflexive (sym eq))
+    El i Univ (U {j} eq _)    = Univ (≤-reflexive (sym eq))
     El i Univ (Π _ iA RT _ _) = λ f f′ → ∀ {a b} (inp : a ≈ b ∈ El _ {- j -} _ iA) → Π̂ f a f′ b (El _ {- k -} _ (ΠRT.T≈T′ (RT inp)))
     El i Univ (L eq A≈A′ _ _) = Unli (El _ _ A≈A′)
 
