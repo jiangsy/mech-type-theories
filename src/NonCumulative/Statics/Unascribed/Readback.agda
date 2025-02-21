@@ -10,11 +10,12 @@
 -- All readback functions receive a natural number. This number is the length of the
 -- context and is responsible for maintaining the correspondence between syntactic
 -- variables and domain variables.
-module NonCumulative.Semantics.Readback where
+module NonCumulative.Statics.Unascribed.Readback where
 
 open import Lib hiding (lookup)
-open import NonCumulative.Semantics.Domain
-open import NonCumulative.Semantics.Evaluation
+open import NonCumulative.Statics.Unascribed.Full
+open import NonCumulative.Statics.Unascribed.Domain
+open import NonCumulative.Statics.Unascribed.Evaluation
 
 
 -- Readback functions
@@ -23,41 +24,41 @@ open import NonCumulative.Semantics.Evaluation
 -- Rf: readback from domain normal forms to syntactic normal forms, performing η expansion as well
 -- Re: readback from domain neutral forms to syntactic neutral forms
 -- Rty: readback from domain value that is intended to represent types to syntactic normal forms
-infix 4 Rf_-_↘_ Re_-_↘_ Rty_-_at_↘_
+infix 4 Rf_-_↘_ Re_-_↘_ Rty_-_↘_
 
 mutual
 
   data Rf_-_↘_ : ℕ → Df → Nf → Set where
-    RU  : ∀ {i j} n →
-          Rty n - A at i ↘ W →
+    RU  : ∀ {i} n →
+          Rty n - A ↘ W →
           ---------------------
-          Rf n - ↓ j (U i) A ↘ W
-    Rze : ∀ {i} n →
-          Rf n - ↓ i N ze ↘ ze
-    Rsu : ∀ {i} n →
-          Rf n - ↓ i N a ↘ w →
+          Rf n - ↓ (U i) A ↘ W
+    Rze : ∀ n →
+          Rf n - ↓ N ze ↘ ze
+    Rsu : ∀ n →
+          Rf n - ↓ N a ↘ w →
           ---------------------------
-          Rf n - ↓ i N (su a) ↘ (su w)
-    RΛ  : ∀ {i j k} n →
-          Rty n - A at i ↘ W →
-          a ∙ l′ i A n ↘ b →
-          ⟦ T ⟧ ρ ↦ l′ i A n ↘ B →
-          Rf 1 + n - ↓ j B b ↘ w →
+          Rf n - ↓ N (su a) ↘ (su w)
+    RΛ  : ∀ n →
+          Rty n - A ↘ W →
+          a ∙ l′ A n ↘ b →
+          ⟦ T ⟧ ρ ↦ l′ A n ↘ B →
+          Rf 1 + n - ↓ B b ↘ w →
           ------------------------------
-          Rf n - ↓ k (Π i A (T ↙ j) ρ) a ↘ Λ (W ↙ i) w
-    Rli : ∀ {i j k} n →
+          Rf n - ↓ (Π A T ρ) a ↘ Λ W w
+    Rli : ∀ {i} n →
           unli∙ a ↘ b →
-          Rf n - ↓ j A b ↘ w →
+          Rf n - ↓ A b ↘ w →
           ---------------------------
-          Rf n - ↓ k (Li i j A) a ↘ liftt i w
-    RN  : ∀ {i j} n →
+          Rf n - ↓ (Li i A) a ↘ liftt i w
+    RN  : ∀ n →
           Re n - c ↘ u →
           --------------------------
-          Rf n - ↓ j N (↑ i A c) ↘ ne u
-    Rne : ∀ {i j k} n →
+          Rf n - ↓ N (↑ A c) ↘ ne u
+    Rne : ∀ n →
           Re n - c ↘ u →
           ----------------------------------
-          Rf n - ↓ i (↑ k A C) (↑ j A′ c) ↘ ne u
+          Rf n - ↓ (↑ A C) (↑ A′ c) ↘ ne u
 
   data Re_-_↘_ : ℕ → Dn → Ne → Set where
     Rl : ∀ n x →
@@ -67,48 +68,45 @@ mutual
          Rf n - d ↘ w →
          ---------------------
          Re n - c $ d ↘ u $ w
-    Rr : ∀ {i} n →
+    Rr : ∀ n →
          -- compute normal form of the motive
-         ⟦ T ⟧ ρ ↦ l′ 0 N n ↘ A →
-         Rty 1 + n - A at i ↘ W →
+         ⟦ T ⟧ ρ ↦ l′ N n ↘ A →
+         Rty 1 + n - A ↘ W →
          -- compute normal form of the base case
          ⟦ T ⟧ ρ ↦ ze ↘ A′ →
-         Rf n - ↓ i A′ a ↘ w →
+         Rf n - ↓ A′ a ↘ w →
          -- compute normal form of the step case
-         ⟦ t ⟧ ρ ↦ l′ 0 N n ↦ l′ i A (suc n) ↘ b →
-         ⟦ T ⟧ ρ ↦ su (l′ 0 N n) ↘ A″ →
-         Rf 2 + n - ↓ i A″ b ↘ w′ →
+         ⟦ t ⟧ ρ ↦ l′ N n ↦ l′ A (suc n) ↘ b →
+         ⟦ T ⟧ ρ ↦ su (l′ N n) ↘ A″ →
+         Rf 2 + n - ↓ A″ b ↘ w′ →
          -- compute neutral form of the number
          Re n - c ↘ u →
          ----------------------------
-         Re n - rec (T ↙ i) a t ρ c ↘ rec (W ↙ i) w w′ u
+         Re n - rec T a t ρ c ↘ rec W w w′ u
     Runli : ∀ n →
             Re n - c ↘ u →
             -----------------------
             Re n - unli c ↘ unlift u
 
-  data Rty_-_at_↘_ : ℕ → D → ℕ → Nf → Set where
-    RU  : ∀ {i j} n →
-          Rty n - U i at j ↘ Se i
-    RN  : ∀ {i} n →
-          Rty n - N at i ↘ N
-    RΠ  : ∀ {i j k} n →
-          Rty n - A at i ↘ W →
-          ⟦ T ⟧ ρ ↦ l′ i A n ↘ B →
-          Rty 1 + n - B at j ↘ W′ →
+  data Rty_-_↘_ : ℕ → D → Nf → Set where
+    RU  : ∀ {i} n →
+          Rty n - U i ↘ Se i
+    RN  : ∀ n →
+          Rty n - N ↘ N
+    RΠ  : ∀ n →
+          Rty n - A ↘ W →
+          ⟦ T ⟧ ρ ↦ l′ A n ↘ B →
+          Rty 1 + n - B ↘ W′ →
           ------------------------------
-          Rty n - Π i A (T ↙ j) ρ at k ↘ Π (W ↙ i) (W′ ↙ j)
-    RL  : ∀ {i j k} n →
-          Rty n - A at j ↘ W →
+          Rty n - Π A T ρ ↘ Π W W′
+    RL  : ∀ {i} n →
+          Rty n - A ↘ W →
           ------------------------------
-          Rty n - Li i j A at k ↘ Liftt i (W ↙ j)
-    Rne : ∀ {i j} n →
+          Rty n - Li i A ↘ Liftt i W
+    Rne : ∀ n →
           Re n - c ↘ V →
           ---------------------
-          Rty n - ↑ i A c at j ↘ ne V
-
-pattern RU′ n ↘W = RU n ↘W
-pattern Rne′ n ↘u = Rne n ↘u
+          Rty n - ↑ A c ↘ ne V
 
 -- All readback functions are deterministic.
 mutual
@@ -118,7 +116,7 @@ mutual
   Rf-det (Rsu _ ↘w) (Rsu _ ↘w′)         = cong su (Rf-det ↘w ↘w′)
   Rf-det (RΛ _ ↘W ↘a ↘A ↘w) (RΛ _ ↘W′ ↘a′ ↘A′ ↘w′)
     rewrite ap-det ↘a ↘a′
-          | ⟦⟧-det ↘A ↘A′               = cong₂ Λ (cong (_↙ _) (Rty-det ↘W ↘W′)) (Rf-det ↘w ↘w′)
+          | ⟦⟧-det ↘A ↘A′               = cong₂ Λ (Rty-det ↘W ↘W′) (Rf-det ↘w ↘w′)
   Rf-det (RN _ ↘u) (RN _ ↘u′)           = cong ne (Re-det ↘u ↘u′)
   Rf-det (Rne _ ↘u) (Rne _ ↘u′) = cong ne (Re-det ↘u ↘u′)
   Rf-det (Rli _ ↘a ↘w) (Rli _ ↘b ↘w′)
@@ -138,7 +136,7 @@ mutual
           | Re-det ↘c ↘c′            = refl
   Re-det (Runli _ ↘u) (Runli _ ↘u′)  = cong unlift (Re-det ↘u ↘u′)
 
-  Rty-det : ∀ {n i} → Rty n - A at i ↘ W → Rty n - A at i ↘ W′ → W ≡ W′
+  Rty-det : ∀ {n} → Rty n - A ↘ W → Rty n - A ↘ W′ → W ≡ W′
   Rty-det (RU _) (RU _)              = refl
   Rty-det (RN _) (RN _)              = refl
   Rty-det (RΠ _ ↘W ↘B ↘W′) (RΠ _ ↘W″ ↘B′ ↘W‴)
@@ -146,44 +144,42 @@ mutual
           | ⟦⟧-det ↘B ↘B′
           | Rty-det ↘W′ ↘W‴          = refl
   Rty-det (Rne _ ↘V) (Rne _ ↘V′) = cong ne (Re-det ↘V ↘V′)
-  Rty-det (RL _ ↘W) (RL _ ↘W′)   = cong (λ W → Liftt _ (W ↙ _)) (Rty-det ↘W ↘W′)
+  Rty-det (RL _ ↘W) (RL _ ↘W′)   = cong (λ W → Liftt _ W) (Rty-det ↘W ↘W′)
 
 -- Normalization by evaluation where an evaluation environment is passed externally
-record NbEEnvs n ρ t i T w : Set where
+record NbEEnvs n ρ t T w : Set where
   field
     ⟦t⟧  : D
     ⟦T⟧  : D
     ↘⟦t⟧ : ⟦ t ⟧ ρ ↘ ⟦t⟧
     ↘⟦T⟧ : ⟦ T ⟧ ρ ↘ ⟦T⟧
-    ↓⟦t⟧ : Rf n - ↓ i ⟦T⟧ ⟦t⟧ ↘ w
+    ↓⟦t⟧ : Rf n - ↓ ⟦T⟧ ⟦t⟧ ↘ w
 
 -- Compute an initial global evaluation environment using a context stack
 data InitEnvs : Ctx → Env → Set where
   base : InitEnvs [] emp
-  s-∷  : ∀ {i} →
-         InitEnvs Γ ρ →
+  s-∷  : InitEnvs Γ ρ →
          ⟦ T ⟧ ρ ↘ A →
          ------------------------------------------
-         InitEnvs ((T ↙ i) ∷ Γ) (ρ ↦ l′ i A (len Γ))
+         InitEnvs (T ∷ Γ) (ρ ↦ l′ A (len Γ))
 
 -- Normalization by evaluation
 --
 -- We will show that if Γ ⊢ t ∶ T, then there must be a normal form w such that NbE Γ t T w
-record NbE Γ t i T w : Set where
+record NbE Γ t T w : Set where
   field
     envs : Env
     init : InitEnvs Γ envs
-    nbe  : NbEEnvs (len Γ) envs t i T w
+    nbe  : NbEEnvs (len Γ) envs t T w
 
 -- Above definitions are all deterministic
 InitEnvs-det : InitEnvs Γ ρ → InitEnvs Γ ρ′ → ρ ≡ ρ′
 InitEnvs-det base base                     = refl
 InitEnvs-det (s-∷ {Ψ} ↘ρ ↘A) (s-∷ ↘ρ′ ↘A′)
-  rewrite InitEnvs-det ↘ρ ↘ρ′ = cong (λ A → _ ↦ l′ _ A (len Ψ)) (⟦⟧-det ↘A ↘A′)
+  rewrite InitEnvs-det ↘ρ ↘ρ′ = cong (λ A → _ ↦ l′ A (len Ψ)) (⟦⟧-det ↘A ↘A′)
 
-NbE-det : ∀ {i} →
-          NbE Γ t i T w →
-          NbE Γ t i T w′ →
+NbE-det : NbE Γ t T w →
+          NbE Γ t T w′ →
           w ≡ w′
 NbE-det nbe nbe′
   with nbe | nbe′
