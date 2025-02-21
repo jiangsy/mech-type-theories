@@ -85,11 +85,15 @@ import NonCumulative.Ascribed.Consequences fext as Consequence′
 -- Properties of an unascribed set of rules
 
 -- Unascribed system is complete to the ascribe one
-import NonCumulative.Unascribed.Properties.Equivalence.Completeness as UCompleteness
+import NonCumulative.Unascribed.Properties.Equivalence.Completeness as Completeness
 
 -- Unascribed system is sound to the ascribe one
 import NonCumulative.Unascribed.Properties.Equivalence.Soundness as USoundness
 
 -- Transfer of some properties from the ascribed system to the unascribed one 
 -- using soundness and completeness
--- import NonCumulative.Unascribed.Statics.Properties as UProperties
+import NonCumulative.Unascribed.Properties.Equivalence.Consequences fext as UConsequences
+
+-- Unascribed NbE is also sound and complete wrt to the syntactic rules of the unascribed systems
+import NonCumulative.Unascribed.Properties.NbE.Soundness fext as UNbESoundness
+import NonCumulative.Unascribed.Properties.NbE.Completeness fext as UNbECompleteness

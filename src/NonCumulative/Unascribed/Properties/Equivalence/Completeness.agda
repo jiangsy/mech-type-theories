@@ -6,7 +6,7 @@ open import Lib
 
 open import NonCumulative.Ascribed.Statics.Full as A
 open import NonCumulative.Unascribed.Statics.Full as U
-open import NonCumulative.Unascribed.Transfer
+open import NonCumulative.Unascribed.Statics.Transfer
 
 -- ↝ relation is functonal (deterministic and total)
 mutual

@@ -14,7 +14,8 @@ open import NonCumulative.Unascribed.Statics.Full as U
 open import NonCumulative.Unascribed.Semantics.Domain as U
 open import NonCumulative.Unascribed.Semantics.Evaluation as U
 open import NonCumulative.Unascribed.Semantics.Readback as U
-open import NonCumulative.Unascribed.Transfer as U
+open import NonCumulative.Unascribed.Statics.Transfer as U
+open import NonCumulative.Unascribed.Semantics.Transfer as U
 
 
 ↦-⌊⌋-comm : ∀ ρ a → 

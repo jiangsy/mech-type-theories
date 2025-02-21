@@ -22,7 +22,7 @@ open import NonCumulative.Ascribed.Consequences fext
 open import NonCumulative.Ascribed.Statics.Full as A
 open import NonCumulative.Ascribed.Statics.Simpl
 open import NonCumulative.Unascribed.Statics.Full as U
-open import NonCumulative.Unascribed.Transfer
+open import NonCumulative.Unascribed.Statics.Transfer
 
 U⇒A-vlookup : ∀ {x} →
  A.Γ [↝] U.Γ′ →

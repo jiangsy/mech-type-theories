@@ -15,7 +15,7 @@ open import NonCumulative.Unascribed.Statics.Full as U
 open import NonCumulative.Unascribed.Semantics.Domain as U
 open import NonCumulative.Unascribed.Semantics.Evaluation as U
 open import NonCumulative.Unascribed.Semantics.Readback as U
-open import NonCumulative.Unascribed.Transfer
+open import NonCumulative.Unascribed.Statics.Transfer
 open import NonCumulative.Unascribed.Properties.Equivalence.Soundness fext as US
 open import NonCumulative.Unascribed.Properties.Equivalence.Completeness as UC
 open import NonCumulative.Unascribed.Properties.NbE.Totality fext as UT

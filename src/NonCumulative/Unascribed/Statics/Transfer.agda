@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module NonCumulative.Unascribed.Transfer where
+module NonCumulative.Unascribed.Statics.Transfer where
 
 open import Lib
 
@@ -115,27 +115,6 @@ mutual
     ⌊ rec (W ↙ _) z s u ⌋ⁿᵉ = rec ⌊ W ⌋ⁿᶠ ⌊ z ⌋ⁿᶠ ⌊ s ⌋ⁿᶠ ⌊ u ⌋ⁿᵉ 
     ⌊ u $ w ⌋ⁿᵉ = ⌊ u ⌋ⁿᵉ $ ⌊ w ⌋ⁿᶠ
     ⌊ unlift u ⌋ⁿᵉ = unlift ⌊ u ⌋ⁿᵉ
-    
-mutual
-    ⌊_⌋ᵈᶠ : A.Df → U.Df
-    ⌊ ↓ i A a ⌋ᵈᶠ = ↓ ⌊ A ⌋ᵈ ⌊ a ⌋ᵈ
-
-    ⌊_⌋ᵈ : A.D → U.D
-    ⌊ N ⌋ᵈ = N 
-    ⌊ Π _ a (T ↙ i) ρ ⌋ᵈ = Π ⌊ a ⌋ᵈ ⌊ T ⌋ λ n → ⌊ ρ n ⌋ᵈ
-    ⌊ U i ⌋ᵈ = U i 
-    ⌊ Li i j a ⌋ᵈ = Li i ⌊ a ⌋ᵈ
-    ⌊ ze ⌋ᵈ = ze
-    ⌊ su a ⌋ᵈ = su ⌊ a ⌋ᵈ
-    ⌊ Λ t ρ ⌋ᵈ = Λ ⌊ t ⌋ (λ n → ⌊ ρ n ⌋ᵈ)
-    ⌊ li i a ⌋ᵈ = li i ⌊ a ⌋ᵈ
-    ⌊ ↑ i A e ⌋ᵈ = ↑ ⌊ A ⌋ᵈ ⌊ e ⌋ᵈⁿ
-
-    ⌊_⌋ᵈⁿ : A.Dn → U.Dn
-    ⌊ l x ⌋ᵈⁿ = l x   
-    ⌊ rec (T ↙ i) a t ρ e ⌋ᵈⁿ = rec ⌊ T ⌋ ⌊ a ⌋ᵈ ⌊ t ⌋ (λ n → ⌊ ρ n ⌋ᵈ) ⌊ e ⌋ᵈⁿ
-    ⌊ e $ d ⌋ᵈⁿ = ⌊ e ⌋ᵈⁿ $ ⌊ d ⌋ᵈᶠ
-    ⌊ unli e ⌋ᵈⁿ = unli ⌊ e ⌋ᵈⁿ
 
 [⌊_⌋] : A.Ctx → U.Ctx
 [⌊_⌋] [] = []

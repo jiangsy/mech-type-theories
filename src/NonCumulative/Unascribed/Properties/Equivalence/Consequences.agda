@@ -3,17 +3,17 @@
 open import Level
 open import Axiom.Extensionality.Propositional
 
-module NonCumulative.Unascribed.Statics.Properties (fext : ∀ {ℓ₁ ℓ₂} → Extensionality ℓ₁ ℓ₂)  where
+module NonCumulative.Unascribed.Properties.Equivalence.Consequences (fext : ∀ {ℓ₁ ℓ₂} → Extensionality ℓ₁ ℓ₂)  where
 
 open import Lib
 
-import NonCumulative.Consequences fext as A
+import NonCumulative.Ascribed.Consequences fext as A
 import NonCumulative.Ascribed.Statics.Properties.Contexts as A
 import NonCumulative.Ascribed.Statics.Presup as A
 open import NonCumulative.Unascribed.Statics.Full
-open import NonCumulative.Statics.Equivalence.Transfer
-open import NonCumulative.Statics.Equivalence.Soundness fext
-open import NonCumulative.Statics.Equivalence.Completeness
+open import NonCumulative.Unascribed.Statics.Transfer
+open import NonCumulative.Unascribed.Properties.Equivalence.Soundness fext
+open import NonCumulative.Unascribed.Properties.Equivalence.Completeness
 
 consistency : ∀ {j} → [] ⊢ t ∶ Π (Se j) (v 0) → ⊥
 consistency ⊢t′
