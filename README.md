@@ -23,18 +23,18 @@ feel free to contribute.
 1. Jason Z. S. Hu and Brigitte Pientka. A Categorical Normalization Proof for the
    Modal Lambda-Calculus (**MFPS 22**)
    
-   [See the code](Unbox.README.html)
+   [See the code](https://hustmphrrr.github.io/mech-type-theories/Unbox.README.html)
 
 1. Jason Z. S. Hu, Junyoung Jang and Brigitte Pientka. Normalization by Evaluation for Modal Dependent Type Theory (**JFP 23**)
    
-   [See the code](Mint.README.html)
+   [See the code](https://hustmphrrr.github.io/mech-type-theories/Mint.README.html)
 
    Please also see [here](https://hustmphrrr.github.io/Kripke-style/). 
 
 1. Jason Z. S. Hu and Brigitte Pientka. Layered Modal Type Theory: Where
    Meta-programming Meets Intensional Analysis (**ESOP 24**)
 
-   [See the code](Layered.README.html); [also](CLayered.README.html)
+   [See the code](https://hustmphrrr.github.io/mech-type-theories/Layered.README.html); [also](https://hustmphrrr.github.io/mech-type-theories/CLayered.README.html)
 
 Audience interested in this library might also find [another
 project](https://github.com/Beluga-lang/McTT) that Jason Hu is involved in interesting
