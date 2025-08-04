@@ -37,6 +37,10 @@
       background: white;
       z-index: 100;
       border-right: 1px solid #ddd;
+    }
+
+    /* Animate only when class "animate" is set on body */
+    .animate nav {
       transition: width 0.2s ease, padding 0.2s ease;
     }
 
@@ -84,12 +88,15 @@
       font-weight: bold;
     }
 
-    /* .Agda {
+    .Agda {
       margin-left: 240px;
       flex: 1;
       overflow-y: auto;
+    }
+
+    .animate .Agda {
       transition: margin-left 0.2s ease;
-    } */
+    }
 
     .toggle-btn {
       background: none;
@@ -150,6 +157,9 @@
       border-radius: 0 4px 4px 0;
       cursor: pointer;
       padding: 2px 6px;
+    }
+
+    .animate #fold-toggle {
       transition: left 0.2s ease;
     }
 
@@ -214,10 +224,23 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      const foldBtn = document.getElementById('fold-toggle');
       const currentModule = document.querySelector('.current-module');
 
+      // Restore fold state from localStorage
+      const folded = localStorage.getItem('sidebarFolded') === 'true';
+      document.body.classList.toggle('folded', folded);
+      foldBtn.textContent = folded ? '⮞' : '⮜';
+
+      // Set up toggle with state storage
+      foldBtn.addEventListener('click', function () {
+        const isFolded = document.body.classList.toggle('folded');
+        localStorage.setItem('sidebarFolded', isFolded);
+        this.textContent = isFolded ? '⮞' : '⮜';
+      });
+
+      // Expand parent trees of the current module
       if (currentModule) {
-        // Expand all parents
         let parent = currentModule.closest('li');
         while (parent) {
           parent.classList.remove('collapsed');
@@ -225,19 +248,15 @@
           parent = parent.parentElement.closest('li');
         }
 
-        // Scroll into view
+        // Scroll to current module
         currentModule.scrollIntoView({
           block: 'center',
           behavior: 'instant'
         });
       }
 
-      // Toggle nav folding
-      const foldBtn = document.getElementById('fold-toggle');
-      foldBtn.addEventListener('click', function () {
-        document.body.classList.toggle('folded');
-        this.textContent = document.body.classList.contains('folded') ? '⮞' : '⮜';
-      });
+      // Delay enabling transitions to avoid load animation
+      setTimeout(() => document.body.classList.add('animate'), 0);
     });
   </script>
 </body>
